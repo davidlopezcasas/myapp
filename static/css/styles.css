@@ -1,0 +1,156 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h2, h3 {
+    color: #444;
+}
+
+/* Form Styles */
+form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+
+input[type="text"], input[type="number"], select {
+    width: calc(100% - 22px);
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus, input[type="number"]:focus, select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Button Styles */
+button {
+    display: inline-block;
+    padding: 10px 15px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button.remove-linea, button.remove-etiqueta {
+    background-color: #dc3545;
+}
+
+button.remove-linea:hover, button.remove-etiqueta:hover {
+    background-color: #c82333;
+}
+
+button.add-etiqueta {
+    background-color: #28a745;
+}
+
+button.add-etiqueta:hover {
+    background-color: #218838;
+}
+
+/* Lineas de Producto and Etiquetas Styles */
+.linea-producto, .etiqueta {
+    background: #fafafa;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.linea-producto h4, .etiqueta h4 {
+    margin-top: 0;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #ddd;
+    margin: 20px 0;
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+table th, table td {
+    padding: 15px;
+    text-align: left;
+}
+
+table th {
+    background-color: #007bff;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+table tr:nth-child(even) {
+    background-color: #f4f4f9;
+}
+
+table tr:hover {
+    background-color: #e9ecef;
+}
+
+table td a {
+    color: #007bff;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+table td a:hover {
+    text-decoration: underline;
+}
+
+/* Button Link Styles */
+a.btn {
+    display: inline-block;
+    padding: 10px 15px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-bottom: 20px;
+}
+
+a.btn:hover {
+    background-color: #0056b3;
+}

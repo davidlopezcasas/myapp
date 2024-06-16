@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Editar Albarán</h2>
+    <form action="{{ url_for('edit_albaran', albaran_id=albaran.albaran_id) }}" method="post">
+        <label for="albaran_id">Número de Albarán:</label>
+        <input type="number" id="albaran_id" name="albaran_id" value="{{ albaran.albaran_id }}" readonly><br>
+
+        <label for="cliente_id">Cliente:</label>
+        <select id="cliente_id" name="cliente_id" required>
+            {% for cliente in clientes %}
+            <option value="{{ cliente.cliente_id }}" {% if cliente.cliente_id == albaran.cliente_id %}selected{% endif %}>{{ cliente.nombre }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="portestotales">Portes Totales:</label>
+        <input type="text" id="portestotales" name="portestotales" value="{{ albaran.portestotales }}" required><br>
+
+        <h3>Lineas de Producto</h3>
+        <div id="lineas-producto-container">
+            {% for linea in lineas_producto %}
+            <div class="linea-producto">
+                <label for="nombreproducto">Nombre Producto:</label>
+                <select id="nombreproducto" name="nombreproducto[]">
+                    {% for producto in productos %}
+                    <option value="{{ producto.nombreProducto }}" {% if producto.nombreProducto == linea.nombreproducto %}selected{% endif %}>{{ producto.nombreProducto }}</option>
+                    {% endfor %}
+                </select><br>
+
+                <label for="intervalopesos">Intervalo Pesos:</label>
+                <input type="text" id="intervalopesos" name="intervalopesos[]" value="{{ linea.intervalopesos }}"><br>
+
+                <label for="descripcion">Descripción:</label>
+                <select id="descripcion" name="descripcion[]">
+                    {% for desc in descripciones %}
+                    <option value="{{ desc.descripcion }}" {% if desc.descripcion == linea.descripcion %}selected{% endif %}>{{ desc.descripcion }}</option>
+                    {% endfor %}
+                </select><br>
+
+                <label for="numerocajas">Número de Cajas:</label>
+                <input type="text" id="numerocajas" name="numerocajas[]" value="{{ linea.numerocajas }}"><br>
+
+                <label for="tipocaja">Tipo de Caja:</label>
+                <select id="tipocaja" name="tipocaja[]">
+                    {% for caja in tipos_caja %}
+                    <option value="{{ caja.tipocaja }}" {% if caja.tipocaja == linea.tipocaja %}selected{% endif %}>{{ caja.tipocaja }}</option>
+                    {% endfor %}
+                </select><br>
+
+                <label for="kilos">Kilos:</label>
+                <input type="text" id="kilos" name="kilos[]" value="{{ linea.kilos }}"><br>
+
+                <label for="precio">Precio:</label>
+                <input type="text" id="precio" name="precio[]" value="{{ linea.precio }}"><br>
+
+                <label for="preciocompra">Precio Compra:</label>
+                <input type="text" id="preciocompra" name="preciocompra[]" value="{{ linea.preciocompra }}"><br>
+
+                <label for="porteskg">Portes/Kg:</label>
+                <input type="text" id="porteskg" name="porteskg[]" value="{{ linea.porteskg }}"><br>
+
+                <label for="beneficiokg">Beneficio/Kg:</label>
+                <input type="text" id="beneficiokg" name="beneficiokg[]" value="{{ linea.beneficiokg }}"><br>
+
+                <button type="button" class="add-etiqueta">Añadir Etiqueta</button>
+                <div class="etiquetas-container" data-linea-id="{{ loop.index0 }}">
+                    {% for etiqueta in etiquetas %}
+                    {% if etiqueta.albaran_id == linea.albaran_id and etiqueta.linea_id == linea.linea_id %}
+                    <div class="etiqueta">
+                        <label for="kilos">Kilos:</label>
+                        <input type="text" name="etiqueta_kilos_{{ loop.index0 }}[]" value="{{ etiqueta.kilos }}"><br>
+                        <label for="qretiqueta">QR Etiqueta:</label>
+                        <input type="text" name="qretiqueta_{{ loop.index0 }}[]" value="{{ etiqueta.qretiqueta }}"><br>
+                        <button type="button" class="remove-etiqueta">Eliminar Etiqueta</button>
+                        <hr>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <button type="button" class="remove-linea">Eliminar Línea</button>
+                <hr>
+            </div>
+            {% endfor %}
+        </div>
+        <button type="button" id="add-linea">Añadir Línea de Producto</button><br>
+        <button type="submit">Guardar Albarán</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Lista de Albaranes</h2>
+    <a href="{{ url_for('create_albaran') }}" class="btn btn-primary">Crear nuevo albarán</a>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Portes Totales</th>
+            <th>Acciones</th>
+        </tr>
+        {% for albaran in albaranes %}
+        <tr>
+            <td>{{ albaran.albaran_id }}</td>
+            <td>{{ albaran.cliente_id }}</td>
+            <td>{{ albaran.portestotales }}</td>
+            <td>
+                <a href="{{ url_for('edit_albaran', albaran_id=albaran.albaran_id) }}">Editar</a>
+                <a href="{{ url_for('delete_albaran', albaran_id=albaran.albaran_id) }}">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
