@@ -50,7 +50,6 @@ document.addEventListener('DOMContentLoaded', function () {
     let qrScanner = null;
 
     function startQrScanner() {
-        // Comprobar si el navegador soporta acceso a la cámara
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             qrScanner = new Html5Qrcode("qr-reader");
             qrScanner.start(
@@ -66,10 +65,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 errorMessage => {
                     console.error(errorMessage);
-                })
-                .catch(err => {
-                    console.error('Error al iniciar el escáner QR: ', err);
-                });
+                }
+            ).catch(err => {
+                console.error('Error al iniciar el escáner QR: ', err);
+            });
         } else {
             alert('El acceso a la cámara no está soportado en este navegador.');
         }
