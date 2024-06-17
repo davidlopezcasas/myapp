@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <label for="kilos">Kilos:</label>
                 <input type="text" name="etiqueta_kilos_${lineaId}[]"><br>
                 <label for="qretiqueta">QR Etiqueta:</label>
-                <input type="text" name="qretiqueta_${lineaId}[]"><br>
+                <input type="text" name="qretiqueta_${lineaId}[]" class="qretiqueta-input"><br>
                 <button type="button" class="scan-qr">Escanear QR</button>
                 <button type="button" class="remove-etiqueta">Eliminar Etiqueta</button>
                 <hr>
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
             e.target.closest('.etiqueta').remove();
         }
         if (e.target.classList.contains('scan-qr')) {
-            currentEtiquetaInput = e.target.previousElementSibling;
+            currentEtiquetaInput = e.target.closest('.etiqueta').querySelector('.qretiqueta-input');
             document.getElementById('qr-scanner-modal').style.display = 'block';
             startQrScanner();
         }
