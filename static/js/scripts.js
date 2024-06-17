@@ -37,7 +37,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         if (e.target.classList.contains('scan-qr')) {
             currentEtiquetaInput = e.target.closest('.etiqueta').querySelector('.qretiqueta-input');
-            document.getElementById('qr-scanner-modal').style.display = 'block';
+            const qrScannerModal = document.getElementById('qr-scanner-modal');
+            e.target.closest('.etiqueta').appendChild(qrScannerModal);
+            qrScannerModal.style.display = 'block';
             startQrScanner();
         }
     });
