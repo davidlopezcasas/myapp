@@ -160,3 +160,8 @@ a.btn {
 a.btn:hover {
     background-color: #0056b3;
 }
+
+.uppercase {
+    text-transform: uppercase;
+}
+
