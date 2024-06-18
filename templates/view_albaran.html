@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Detalles del Albarán</h2>
+    <p><strong>Número de Albarán:</strong> {{ albaran.albaran_id }}</p>
+    <p><strong>Cliente:</strong> {{ cliente.nombre }}</p>
+    <p><strong>Portes Totales:</strong> {{ albaran.portestotales }}</p>
+    <h3>Líneas de Producto</h3>
+    {% for linea in lineas_producto %}
+    <div class="linea-producto">
+        <p><strong>Nombre Producto:</strong> {{ linea.nombreproducto }}</p>
+        <p><strong>Intervalo Pesos:</strong> {{ linea.intervalopesos }}</p>
+        <p><strong>Descripción:</strong> {{ linea.descripcion }}</p>
+        <p><strong>Número de Cajas:</strong> {{ linea.numerocajas }}</p>
+        <p><strong>Tipo de Caja:</strong> {{ linea.tipocaja }}</p>
+        <p><strong>Kilos:</strong> {{ linea.kilos }}</p>
+        <p><strong>Precio:</strong> {{ linea.precio }}</p>
+        <p><strong>Precio Compra:</strong> {{ linea.preciocompra }}</p>
+        <p><strong>Portes/Kg:</strong> {{ linea.porteskg }}</p>
+        <p><strong>Beneficio/Kg:</strong> {{ linea.beneficiokg }}</p>
+        <h4>Etiquetas</h4>
+        <ul>
+            {% for etiqueta in linea.etiquetas %}
+            <li>{{ etiqueta.qretiquetacompra }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endfor %}
+    <a href="{{ url_for('index') }}" class="btn btn-primary">Volver</a>
+</div>
+{% endblock %}

@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
             newEtiqueta.classList.add('etiqueta');
             newEtiqueta.innerHTML = `
                 <label for="kilos">Kilos:</label>
-                <input type="text" name="etiqueta_kilos_${lineaId}[]"><br>
+                <input type="number" name="etiqueta_kilos_${lineaId}[]" step="0.01"><br>
                 <label for="qretiqueta">QR Etiqueta:</label>
                 <input type="text" name="qretiqueta_${lineaId}[]" class="qretiqueta-input"><br>
                 <button type="button" class="scan-qr">Escanear QR</button>

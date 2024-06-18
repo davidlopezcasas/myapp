@@ -19,10 +19,33 @@ def get_db_connection():
 def index():
     connection = get_db_connection()
     with connection.cursor() as cursor:
-        cursor.execute("SELECT * FROM albaran")
+        cursor.execute("SELECT * FROM albaran a JOIN cliente c ON a.cliente_id = c.cliente_id")
         albaranes = cursor.fetchall()
     connection.close()
     return render_template('index.html', albaranes=albaranes)
+
+@app.route('/albaran/<int:albaran_id>')
+def view_albaran(albaran_id):
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM albaran WHERE albaran_id = %s", (albaran_id,))
+        albaran = cursor.fetchone()
+
+        cursor.execute("SELECT * FROM cliente WHERE cliente_id = %s", (albaran['cliente_id'],))
+        cliente = cursor.fetchone()
+
+        cursor.execute("SELECT * FROM lineas_producto WHERE albaran_id = %s", (albaran_id,))
+        lineas_producto = cursor.fetchall()
+
+        for linea in lineas_producto:
+            cursor.execute("SELECT qretiquetacompra FROM etiqueta WHERE etiqueta_id IN (SELECT etiqueta_id FROM linea_producto_etiqueta WHERE albaran_id = %s AND linea_id = %s)",
+                           (albaran_id, linea['linea_id']))
+            etiquetas = cursor.fetchall()
+            linea['etiquetas'] = etiquetas
+
+    connection.close()
+    return render_template('view_albaran.html', albaran=albaran, cliente=cliente, lineas_producto=lineas_producto)
+
 
 
 @app.route('/create', methods=['GET', 'POST'])
@@ -32,13 +55,14 @@ def create_albaran():
         albaran_id = request.form['albaran_id']
         cliente_id = request.form['cliente_id']
         portestotales = request.form['portestotales']
+        fecha = request.form['fecha']
 
         try:
             with connection.cursor() as cursor:
                 # Insertar albarán
                 cursor.execute(
-                    "INSERT INTO albaran (albaran_id, cliente_id, portestotales) VALUES (%s, %s, %s)",
-                    (albaran_id, cliente_id, portestotales)
+                    "INSERT INTO albaran (albaran_id, cliente_id, portestotales, fecha) VALUES (%s, %s, %s, %s)",
+                    (albaran_id, cliente_id, portestotales, fecha)
                 )
 
                 # Insertar líneas de producto

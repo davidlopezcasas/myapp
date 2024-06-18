@@ -14,7 +14,7 @@
         </select><br>
 
         <label for="portestotales">Portes Totales:</label>
-        <input type="text" id="portestotales" name="portestotales" value="{{ albaran.portestotales }}" required><br>
+        <input type="number" id="portestotales" name="portestotales" step="0.01" value="{{ albaran.portestotales }}"><br>
 
         <h3>Lineas de Producto</h3>
         <div id="lineas-producto-container">
@@ -38,7 +38,7 @@
                 </select><br>
 
                 <label for="numerocajas">Número de Cajas:</label>
-                <input type="text" id="numerocajas" name="numerocajas[]" value="{{ linea.numerocajas }}"><br>
+                <input type="number" id="numerocajas" name="numerocajas[]" value="{{ linea.numerocajas }}"><br>
 
                 <label for="tipocaja">Tipo de Caja:</label>
                 <select id="tipocaja" name="tipocaja[]">
@@ -48,19 +48,19 @@
                 </select><br>
 
                 <label for="kilos">Kilos:</label>
-                <input type="text" id="kilos" name="kilos[]" value="{{ linea.kilos }}"><br>
+                <input type="number" id="kilos" name="kilos[]" step="0.01" value="{{ linea.kilos }}"><br>
 
                 <label for="precio">Precio:</label>
-                <input type="text" id="precio" name="precio[]" value="{{ linea.precio }}"><br>
+                <input type="number" id="precio" name="precio[]" step="0.01" value="{{ linea.precio }}"><br>
 
                 <label for="preciocompra">Precio Compra:</label>
-                <input type="text" id="preciocompra" name="preciocompra[]" value="{{ linea.preciocompra }}"><br>
+                <input type="number" id="preciocompra" name="preciocompra[]" step="0.01" value="{{ linea.preciocompra }}"><br>
 
                 <label for="porteskg">Portes/Kg:</label>
-                <input type="text" id="porteskg" name="porteskg[]" value="{{ linea.porteskg }}"><br>
+                <input type="number" id="porteskg" name="porteskg[]" step="0.01" value="{{ linea.porteskg }}"><br>
 
                 <label for="beneficiokg">Beneficio/Kg:</label>
-                <input type="text" id="beneficiokg" name="beneficiokg[]" value="{{ linea.beneficiokg }}"><br>
+                <input type="number" id="beneficiokg" name="beneficiokg[]" step="0.01" value="{{ linea.beneficiokg }}"><br>
 
                 <button type="button" class="add-etiqueta">Añadir Etiqueta</button>
                 <div class="etiquetas-container" data-linea-id="{{ loop.index0 }}">
@@ -68,7 +68,7 @@
                     {% if etiqueta.albaran_id == linea.albaran_id and etiqueta.linea_id == linea.linea_id %}
                     <div class="etiqueta">
                         <label for="kilos">Kilos:</label>
-                        <input type="text" name="etiqueta_kilos_{{ loop.index0 }}[]" value="{{ etiqueta.kilos }}"><br>
+                        <input type="number" name="etiqueta_kilos_{{ loop.index0 }}[]" step="0.01" value="{{ etiqueta.kilos }}"><br>
                         <label for="qretiqueta">QR Etiqueta:</label>
                         <input type="text" name="qretiqueta_{{ loop.index0 }}[]" value="{{ etiqueta.qretiqueta }}" class="qretiqueta-input"><br>
                         <button type="button" class="scan-qr">Escanear QR</button>

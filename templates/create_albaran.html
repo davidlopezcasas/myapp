@@ -13,8 +13,11 @@
             {% endfor %}
         </select><br>
 
+        <label for="fecha">Fecha:</label>
+        <input type="date" id="fecha" name="fecha" required><br>
+
         <label for="portestotales">Portes Totales:</label>
-        <input type="text" id="portestotales" name="portestotales"><br>
+        <input type="number" id="portestotales" name="portestotales" step="0.01"><br>
 
         <h3>Lineas de Producto</h3>
         <div id="lineas-producto-container">
@@ -38,7 +41,7 @@
                 </select><br>
 
                 <label for="numerocajas">Número de Cajas:</label>
-                <input type="text" id="numerocajas" name="numerocajas[]"><br>
+                <input type="number" id="numerocajas" name="numerocajas[]"><br>
 
                 <label for="tipocaja">Tipo de Caja:</label>
                 <select id="tipocaja" name="tipocaja[]">
@@ -48,19 +51,19 @@
                 </select><br>
 
                 <label for="kilos">Kilos:</label>
-                <input type="text" id="kilos" name="kilos[]"><br>
+                <input type="number" id="kilos" name="kilos[]" step="0.01"><br>
 
                 <label for="precio">Precio:</label>
-                <input type="text" id="precio" name="precio[]"><br>
+                <input type="number" id="precio" name="precio[]" step="0.01"><br>
 
                 <label for="preciocompra">Precio Compra:</label>
-                <input type="text" id="preciocompra" name="preciocompra[]"><br>
+                <input type="number" id="preciocompra" name="preciocompra[]" step="0.01"><br>
 
                 <label for="porteskg">Portes/Kg:</label>
-                <input type="text" id="porteskg" name="porteskg[]"><br>
+                <input type="number" id="porteskg" name="porteskg[]" step="0.01"><br>
 
                 <label for="beneficiokg">Beneficio/Kg:</label>
-                <input type="text" id="beneficiokg" name="beneficiokg[]"><br>
+                <input type="number" id="beneficiokg" name="beneficiokg[]" step="0.01"><br>
 
                 <!-- QR Code Scanner Section -->
                 <button type="button" class="add-etiqueta">Añadir Etiqueta</button>
