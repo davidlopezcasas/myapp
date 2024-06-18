@@ -159,7 +159,7 @@ def edit_albaran(albaran_id):
                     cursor.execute(
                         """INSERT INTO lineas_producto (albaran_id, linea_id, nombreproducto, intervalopesos, descripcion, 
                         numerocajas, tipocaja, kilos, precio, preciocompra, porteskg, beneficiokg, lote) 
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s. %s)""",
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
                         (albaran_id, linea_id, nombreproducto[i], intervalopesos[i], descripcion[i],
                          numerocajas[i], tipocaja[i], kilos[i], precio[i], preciocompra[i], porteskg[i], beneficiokg[i], lote[i])
                     )
