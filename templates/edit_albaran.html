@@ -70,7 +70,11 @@
                         <label for="kilos">Kilos:</label>
                         <input type="text" name="etiqueta_kilos_{{ loop.index0 }}[]" value="{{ etiqueta.kilos }}"><br>
                         <label for="qretiqueta">QR Etiqueta:</label>
-                        <input type="text" name="qretiqueta_{{ loop.index0 }}[]" value="{{ etiqueta.qretiqueta }}"><br>
+                        <input type="text" name="qretiqueta_{{ loop.index0 }}[]" value="{{ etiqueta.qretiqueta }}" class="qretiqueta-input"><br>
+                        <button type="button" class="scan-qr">Escanear QR</button>
+                        <label for="qretiquetacompra">QR Compra:</label>
+                        <input type="text" name="qretiquetacompra_{{ loop.index0 }}[]" value="{{ etiqueta.qretiquetacompra }}" class="qretiquetacompra-input"><br>
+                        <button type="button" class="scan-qr-compra">Escanear QR Compra</button>
                         <button type="button" class="remove-etiqueta">Eliminar Etiqueta</button>
                         <hr>
                     </div>
@@ -91,5 +95,4 @@
         <div id="qr-reader" style="width:500px"></div>
         <button id="close-qr-scanner">Cerrar</button>
     </div>
-
 {% endblock %}

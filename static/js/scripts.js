@@ -29,6 +29,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 <button type="button" class="scan-qr">Escanear QR</button>
                 <button type="button" class="remove-etiqueta">Eliminar Etiqueta</button>
                 <hr>
+                <label for="qretiquetacompra">QR Compra:</label>
+                <input type="text" name="qretiquetacompra_${lineaId}[]" class="qretiquetacompra-input"><br>
+                <button type="button" class="scan-qr-compra">Escanear QR Compra</button>
+                <hr>
             `;
             e.target.nextElementSibling.appendChild(newEtiqueta);
         }
@@ -37,6 +41,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         if (e.target.classList.contains('scan-qr')) {
             currentEtiquetaInput = e.target.closest('.etiqueta').querySelector('.qretiqueta-input');
+            document.getElementById('qr-scanner-modal').style.display = 'block';
+            startQrScanner();
+        }
+        if (e.target.classList.contains('scan-qr-compra')) {
+            currentEtiquetaInput = e.target.closest('.etiqueta').querySelector('.qretiquetacompra-input');
             document.getElementById('qr-scanner-modal').style.display = 'block';
             startQrScanner();
         }

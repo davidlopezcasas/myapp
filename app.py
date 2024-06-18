@@ -66,11 +66,12 @@ def create_albaran():
                     # Insertar etiquetas asociadas a cada línea de producto
                     etiqueta_kilos = request.form.getlist(f'etiqueta_kilos_{i}[]')
                     qretiqueta = request.form.getlist(f'qretiqueta_{i}[]')
+                    qretiquetacompra = request.form.getlist(f'qretiquetacompra_{i}[]')
 
                     for j in range(len(etiqueta_kilos)):
                         cursor.execute(
-                            "INSERT INTO etiqueta (kilos, qretiqueta) VALUES (%s, %s)",
-                            (etiqueta_kilos[j], qretiqueta[j])
+                            "INSERT INTO etiqueta (kilos, qretiqueta, qretiquetacompra) VALUES (%s, %s, %s)",
+                            (etiqueta_kilos[j], qretiqueta[j], qretiquetacompra[j])
                         )
                         etiqueta_id = cursor.lastrowid
                         cursor.execute(
@@ -140,11 +141,12 @@ def edit_albaran(albaran_id):
                     # Insertar etiquetas asociadas a cada línea de producto
                     etiqueta_kilos = request.form.getlist(f'etiqueta_kilos_{i}[]')
                     qretiqueta = request.form.getlist(f'qretiqueta_{i}[]')
+                    qretiquetacompra = request.form.getlist(f'qretiquetacompra_{i}[]')
 
                     for j in range(len(etiqueta_kilos)):
                         cursor.execute(
-                            "INSERT INTO etiqueta (kilos, qretiqueta) VALUES (%s, %s)",
-                            (etiqueta_kilos[j], qretiqueta[j])
+                            "INSERT INTO etiqueta (kilos, qretiqueta, qretiquetacompra) VALUES (%s, %s, %s)",
+                            (etiqueta_kilos[j], qretiqueta[j], qretiquetacompra[j])
                         )
                         etiqueta_id = cursor.lastrowid
                         cursor.execute(
