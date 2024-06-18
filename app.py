@@ -76,15 +76,16 @@ def create_albaran():
                 preciocompra = request.form.getlist('preciocompra[]')
                 porteskg = request.form.getlist('porteskg[]')
                 beneficiokg = request.form.getlist('beneficiokg[]')
+                lote = request.form.getlist('lote[]')
 
                 for i in range(len(nombreproducto)):
                     linea_id = i + 1  # Suponiendo que cada nueva línea se asigna de manera secuencial
                     cursor.execute(
                         """INSERT INTO lineas_producto (albaran_id, linea_id, nombreproducto, intervalopesos, descripcion, 
-                        numerocajas, tipocaja, kilos, precio, preciocompra, porteskg, beneficiokg) 
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                        numerocajas, tipocaja, kilos, precio, preciocompra, porteskg, beneficiokg, lote) 
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
                         (albaran_id, linea_id, nombreproducto[i], intervalopesos[i], descripcion[i],
-                         numerocajas[i], tipocaja[i], kilos[i], precio[i], preciocompra[i], porteskg[i], beneficiokg[i])
+                         numerocajas[i], tipocaja[i], kilos[i], precio[i], preciocompra[i], porteskg[i], beneficiokg[i], lote[i])
                     )
 
                     # Insertar etiquetas asociadas a cada línea de producto
@@ -151,15 +152,16 @@ def edit_albaran(albaran_id):
                 preciocompra = request.form.getlist('preciocompra[]')
                 porteskg = request.form.getlist('porteskg[]')
                 beneficiokg = request.form.getlist('beneficiokg[]')
+                lote = request.form.getlist('lote[]')
 
                 for i in range(len(nombreproducto)):
                     linea_id = i + 1
                     cursor.execute(
                         """INSERT INTO lineas_producto (albaran_id, linea_id, nombreproducto, intervalopesos, descripcion, 
-                        numerocajas, tipocaja, kilos, precio, preciocompra, porteskg, beneficiokg) 
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                        numerocajas, tipocaja, kilos, precio, preciocompra, porteskg, beneficiokg, lote) 
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s. %s)""",
                         (albaran_id, linea_id, nombreproducto[i], intervalopesos[i], descripcion[i],
-                         numerocajas[i], tipocaja[i], kilos[i], precio[i], preciocompra[i], porteskg[i], beneficiokg[i])
+                         numerocajas[i], tipocaja[i], kilos[i], precio[i], preciocompra[i], porteskg[i], beneficiokg[i], lote[i])
                     )
 
                     # Insertar etiquetas asociadas a cada línea de producto
