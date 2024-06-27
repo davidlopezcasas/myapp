@@ -78,6 +78,7 @@ button.remove-linea:hover, button.remove-etiqueta:hover {
 
 button.add-etiqueta {
     background-color: #28a745;
+    margin-bottom: 10px;
 }
 
 button.add-etiqueta:hover {
@@ -165,3 +166,6 @@ a.btn:hover {
     text-transform: uppercase;
 }
 
+.etiqueta-kilos-input {
+        display: none;
+    }

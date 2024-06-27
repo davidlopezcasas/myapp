@@ -59,6 +59,20 @@
                 <label for="precio">Precio:</label>
                 <input type="number" id="precio" name="precio[]" step="0.01"><br>
 
+                <label for="tipozona">Zona:</label>
+                <select id="tipozona" name="tipozona[]">
+                    {% for zona in tipos_zona %}
+                    <option value="{{ zona.zona }}">{{ zona.zona }}</option>
+                    {% endfor %}
+                </select><br>
+
+                <label for="tipoarte">Arte:</label>
+                <select id="tipoarte" name="tipoarte[]">
+                    {% for arte in tipos_arte %}
+                    <option value="{{ arte.arte }}">{{ arte.arte }}</option>
+                    {% endfor %}
+                </select><br>
+
                 <label for="preciocompra">Precio Compra:</label>
                 <input type="number" id="preciocompra" name="preciocompra[]" step="0.01"><br>
 

@@ -18,23 +18,38 @@ document.addEventListener('DOMContentLoaded', function () {
             e.target.closest('.linea-producto').remove();
         }
         if (e.target.classList.contains('add-etiqueta')) {
-            const newEtiqueta = document.createElement('div');
             const lineaId = e.target.nextElementSibling.dataset.lineaId;
-            newEtiqueta.classList.add('etiqueta');
-            newEtiqueta.innerHTML = `
-                <label for="kilos">Kilos:</label>
-                <input type="number" name="etiqueta_kilos_${lineaId}[]" step="0.01"><br>
-                <label for="qretiqueta">QR Etiqueta:</label>
-                <input type="text" name="qretiqueta_${lineaId}[]" class="qretiqueta-input"><br>
-                <button type="button" class="scan-qr">Escanear QR</button>
-                <button type="button" class="remove-etiqueta">Eliminar Etiqueta</button>
-                <hr>
-                <label for="qretiquetacompra">QR Compra:</label>
-                <input type="text" name="qretiquetacompra_${lineaId}[]" class="qretiquetacompra-input"><br>
-                <button type="button" class="scan-qr-compra">Escanear QR Compra</button>
-                <hr>
-            `;
-            e.target.nextElementSibling.appendChild(newEtiqueta);
+            const numeroCajasInput = e.target.closest('.linea-producto').querySelector('input[name="numerocajas[]"]');
+            const numeroCajas = parseInt(numeroCajasInput.value) || 0;
+            const etiquetasContainer = e.target.nextElementSibling;
+            etiquetasContainer.innerHTML = '';
+
+            for (let i = 0; i <= numeroCajas; i++) {
+                const newEtiqueta = document.createElement('div');
+                newEtiqueta.classList.add('etiqueta');
+
+                if (i != numeroCajas) {
+                    newEtiqueta.innerHTML = `
+                        <label for="kilos">Kilos:</label>
+                        <input type="number" name="kilo_${i}" step="0.01"><br>
+                    `;
+                } else {
+                    newEtiqueta.innerHTML = `
+                        <label for="qretiqueta">QR Etiqueta:</label>
+                        <input type="text" name="qretiqueta_${lineaId}[]" class="qretiqueta-input"><br>
+                        <button type="button" class="scan-qr">Escanear QR</button>
+                        <hr>
+                        <label for="qretiquetacompra">QR Compra:</label>
+                        <input type="text" name="qretiquetacompra_${lineaId}[]" class="qretiquetacompra-input"><br>
+                        <button type="button" class="scan-qr-compra">Escanear QR Compra</button>
+                        <hr>
+                        <input type="text" name="etiqueta_kilos_${lineaId}" class="etiqueta-kilos-input" readonly><br>
+                        <button type="button" class="concat-kilos" data-linea-id="${lineaId}">Guardar etiqueta</button>
+                        <button type="button" class="remove-etiqueta">Eliminar Etiqueta</button>
+                    `;
+                }
+                etiquetasContainer.appendChild(newEtiqueta);
+            }
         }
         if (e.target.classList.contains('remove-etiqueta')) {
             e.target.closest('.etiqueta').remove();
@@ -48,6 +63,13 @@ document.addEventListener('DOMContentLoaded', function () {
             currentEtiquetaInput = e.target.closest('.etiqueta').querySelector('.qretiquetacompra-input');
             document.getElementById('qr-scanner-modal').style.display = 'block';
             startQrScanner();
+        }
+        if (e.target.classList.contains('concat-kilos')) {
+            const lineaId = e.target.dataset.lineaId;
+            const kilosInputs = e.target.closest('.etiquetas-container').querySelectorAll(`input[name^="kilo_"]`);
+            let kilosConcatenados = Array.from(kilosInputs).map(input => input.value).join(' ');
+            const etiquetaKilosInput = e.target.closest('.etiquetas-container').querySelector(`input[name="etiqueta_kilos_${lineaId}"]`);
+            etiquetaKilosInput.value = kilosConcatenados;
         }
     });
 
