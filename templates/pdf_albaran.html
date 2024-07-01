@@ -44,8 +44,8 @@
         {% endfor %}
         <tfoot>
             <tr>
-                <td>{{ ns.total_cajas }}</td>
-                <td>{{ ns.total_kilos }}</td>
+                <td>{{ ns.total_cajas | round(2) }}</td>
+                <td>{{ ns.total_kilos | round(2) }}</td>
                 <td colspan="4"></td>
             </tr>
         </tfoot>
