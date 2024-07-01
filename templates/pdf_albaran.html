@@ -17,7 +17,8 @@
     <h2>ALBARÁN TRANSPORTE</h2>
     <p><strong>Albarán nº:</strong> {{ albaran.albaran_id }}</p>
     <p><strong>Fecha:</strong> {{ albaran.fecha }}</p>
-    <p><strong>Cliente:</strong> {{ cliente.nombre }}</p>
+    <p><strong>Cliente:</strong> {{ cliente.direccion }}</p>
+    <p><strong>Dirección:</strong> {{ cliente.direccionentrega }}</p>
 
     {% set ns = namespace(total_cajas=0, total_kilos=0) %}
     <table>
