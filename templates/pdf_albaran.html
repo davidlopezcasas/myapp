@@ -37,7 +37,7 @@
             <td>{{ linea.kilos }}</td>
             <td>{{ linea.nombreproducto }}<br><br>{{ linea.cientifico }}</td>
             <td>ATLANT. NE FAO 27<br><br>{{ linea.zona }}</td>
-            <td>{{ linea.lote }}</td>
+            <td>{{ linea.lote | upper }}</td>
             <td>{{ linea.arte }}</td>
         </tr>
         {% set ns.total_cajas = ns.total_cajas + linea.numerocajas %}
