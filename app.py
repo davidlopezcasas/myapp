@@ -22,7 +22,7 @@ def get_db_connection():
 def index():
     connection = get_db_connection()
     with connection.cursor() as cursor:
-        cursor.execute("SELECT * FROM albaran a JOIN cliente c ON a.cliente_id = c.cliente_id")
+        cursor.execute("SELECT * FROM albaran a JOIN cliente c ON a.cliente_id = c.cliente_id ORDER BY a.albaran_id DESC")
         albaranes = cursor.fetchall()
     connection.close()
     return render_template('index.html', albaranes=albaranes)
