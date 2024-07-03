@@ -26,7 +26,13 @@
         <h4>Etiquetas</h4>
         <ul>
             {% for etiqueta in linea.etiquetas %}
-            <li>{{ etiqueta.kilos }}</li>
+            <li>
+                <ul>
+                    {% for kilo in etiqueta.kilos %}
+                    <li>{{ kilo }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
             <li>{{ etiqueta.qretiquetacompra }}</li>
             {% endfor %}
         </ul>

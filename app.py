@@ -27,6 +27,7 @@ def index():
     connection.close()
     return render_template('index.html', albaranes=albaranes)
 
+
 @app.route('/albaran/<int:albaran_id>')
 def view_albaran(albaran_id):
     connection = get_db_connection()
@@ -41,14 +42,20 @@ def view_albaran(albaran_id):
         lineas_producto = cursor.fetchall()
 
         for linea in lineas_producto:
-            cursor.execute("SELECT * FROM etiqueta WHERE etiqueta_id IN (SELECT etiqueta_id FROM linea_producto_etiqueta WHERE albaran_id = %s AND linea_id = %s)",
-                           (albaran_id, linea['linea_id']))
+            cursor.execute(
+                "SELECT * FROM etiqueta WHERE etiqueta_id IN (SELECT etiqueta_id FROM linea_producto_etiqueta WHERE albaran_id = %s AND linea_id = %s)",
+                (albaran_id, linea['linea_id']))
             etiquetas = cursor.fetchall()
+
+            # Convertir kilos en una lista
+            for etiqueta in etiquetas:
+                if 'kilos' in etiqueta:
+                    etiqueta['kilos'] = etiqueta['kilos'].split()
+
             linea['etiquetas'] = etiquetas
 
     connection.close()
     return render_template('view_albaran.html', albaran=albaran, cliente=cliente, lineas_producto=lineas_producto)
-
 
 
 @app.route('/create', methods=['GET', 'POST'])
