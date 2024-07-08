@@ -66,6 +66,12 @@
                     {% endfor %}
                 </select><br>
 
+                <label for="lote">Barco:</label>
+                <input type="text" id="barco" name="barco[]" class="uppercase"><br>
+
+                <label for="obs">Observaciones:</label>
+                <input type="text" id="obs" name="obs[]" class="uppercase"><br>
+
                 <label for="tipoarte">Arte:</label>
                 <select id="tipoarte" name="tipoarte[]">
                     {% for arte in tipos_arte %}

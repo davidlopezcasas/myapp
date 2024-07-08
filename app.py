@@ -89,15 +89,17 @@ def create_albaran():
                 arte = request.form.getlist('tipoarte[]')
                 zona = request.form.getlist('tipozona[]')
                 lote = request.form.getlist('lote[]')
+                barco = request.form.getlist('barco[]')
+                obs = request.form.getlist('obs[]')
 
                 for i in range(len(nombreproducto)):
                     linea_id = i + 1  # Suponiendo que cada nueva línea se asigna de manera secuencial
                     cursor.execute(
                         """INSERT INTO lineas_producto (albaran_id, linea_id, nombreproducto, intervalopesos, descripcion, 
-                        numerocajas, tipocaja, kilos, precio, preciocompra, porteskg, beneficiokg, lote, zona, arte) 
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                        numerocajas, tipocaja, kilos, precio, preciocompra, porteskg, beneficiokg, lote, zona, arte, barco, obs) 
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
                         (albaran_id, linea_id, nombreproducto[i], intervalopesos[i], descripcion[i],
-                         numerocajas[i], tipocaja[i], kilos[i], precio[i], preciocompra[i], porteskg[i], beneficiokg[i], lote[i], zona[i], arte[i])
+                         numerocajas[i], tipocaja[i], kilos[i], precio[i], preciocompra[i], porteskg[i], beneficiokg[i], lote[i], zona[i], arte[i], barco[i], obs[i])
                     )
 
                     # Insertar etiquetas asociadas a cada línea de producto
@@ -172,15 +174,18 @@ def edit_albaran(albaran_id):
                 arte = request.form.getlist('tipoarte[]')
                 zona = request.form.getlist('tipozona[]')
                 lote = request.form.getlist('lote[]')
+                barco = request.form.getlist('barco[]')
+                obs = request.form.getlist('obs[]')
+
 
                 for i in range(len(nombreproducto)):
                     linea_id = i + 1
                     cursor.execute(
                         """INSERT INTO lineas_producto (albaran_id, linea_id, nombreproducto, intervalopesos, descripcion, 
-                        numerocajas, tipocaja, kilos, precio, preciocompra, porteskg, beneficiokg, lote, zona, arte) 
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                        numerocajas, tipocaja, kilos, precio, preciocompra, porteskg, beneficiokg, lote, zona, arte, barco, obs) 
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
                         (albaran_id, linea_id, nombreproducto[i], intervalopesos[i], descripcion[i],
-                         numerocajas[i], tipocaja[i], kilos[i], precio[i], preciocompra[i], porteskg[i], beneficiokg[i], lote[i], zona[i], arte[i])
+                         numerocajas[i], tipocaja[i], kilos[i], precio[i], preciocompra[i], porteskg[i], beneficiokg[i], lote[i], zona[i], arte[i], barco[i], obs[i])
                     )
 
                     # Insertar etiquetas asociadas a cada línea de producto
