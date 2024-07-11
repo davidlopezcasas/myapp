@@ -21,8 +21,8 @@ class User(UserMixin):
         self.password = password
 
 users = {
-    1: User(1, 'soco', generate_password_hash('1983s')),
-    2: User(2, 'fran', generate_password_hash('1983f'))
+    1: User(1, 'SOCO', generate_password_hash('1983S')),
+    2: User(2, 'FRAN', generate_password_hash('1983F'))
 }
 
 @login_manager.user_loader
