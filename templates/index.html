@@ -2,11 +2,16 @@
 
 {% block content %}
 <div class="container">
-    <h2>Lista de Albaranes</h2>
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" class="titulo-imagen">
+    <!-- Botón de Logout -->
+    <div class="text-right" style="margin-bottom: 20px;">
+        <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+    </div>
+
     <a href="{{ url_for('create_albaran') }}" class="btn btn-primary">Crear nuevo albarán</a>
     <table>
         <tr>
-            <th>ID</th>
+            <th>Número</th>
             <th>Cliente</th>
             <th>Fecha</th>
             <th>Acciones</th>
@@ -159,6 +164,13 @@ document.addEventListener('DOMContentLoaded', function () {
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+.titulo-imagen {
+    display: block;
+    margin: 30px 0 50px 0;
+    width: 400px; /* Ajusta el ancho deseado */
+    height: auto; /* Mantiene la proporción de la imagen */
 }
 </style>
 

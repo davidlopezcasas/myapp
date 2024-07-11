@@ -1,10 +1,51 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file, make_response, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, make_response, jsonify
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from werkzeug.security import check_password_hash, generate_password_hash
 import pymysql
 from weasyprint import HTML, CSS
 import io
-import os
+from datetime import timedelta
 
 app = Flask(__name__)
+app.secret_key = 'tu_secreto_aqui'
+app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=1)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+class User(UserMixin):
+    def __init__(self, id, username, password):
+        self.id = id
+        self.username = username
+        self.password = password
+
+users = {
+    1: User(1, 'soco', generate_password_hash('1983s')),
+    2: User(2, 'fran', generate_password_hash('1983f'))
+}
+
+@login_manager.user_loader
+def load_user(user_id):
+    return users.get(int(user_id))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        for user in users.values():
+            if user.username == username and check_password_hash(user.password, password):
+                login_user(user, remember=True)
+                return redirect(url_for('index'))
+        flash('Nombre de usuario o contraseña incorrectos')
+    return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 
 def get_db_connection():
@@ -19,6 +60,7 @@ def get_db_connection():
 
 
 @app.route('/')
+@login_required
 def index():
     connection = get_db_connection()
     with connection.cursor() as cursor:
@@ -28,6 +70,7 @@ def index():
     return render_template('index.html', albaranes=albaranes)
 
 @app.route('/get_costes/<int:albaran_id>', methods=['GET'])
+@login_required
 def get_costes(albaran_id):
     connection = get_db_connection()
     with connection.cursor() as cursor:
@@ -38,6 +81,7 @@ def get_costes(albaran_id):
 
 
 @app.route('/costes/<int:albaran_id>', methods=['POST'])
+@login_required
 def guardar_costes(albaran_id):
     data = request.get_json()
     connection = get_db_connection()
@@ -54,6 +98,7 @@ def guardar_costes(albaran_id):
 
 
 @app.route('/albaran/<int:albaran_id>')
+@login_required
 def view_albaran(albaran_id):
     connection = get_db_connection()
     with connection.cursor() as cursor:
@@ -95,6 +140,7 @@ def view_albaran(albaran_id):
 
 
 @app.route('/create', methods=['GET', 'POST'])
+@login_required
 def create_albaran():
     connection = get_db_connection()
     if request.method == 'POST':
@@ -179,6 +225,7 @@ def create_albaran():
 
 
 @app.route('/edit/<int:albaran_id>', methods=['GET', 'POST'])
+@login_required
 def edit_albaran(albaran_id):
     connection = get_db_connection()
     if request.method == 'POST':
@@ -275,6 +322,7 @@ def edit_albaran(albaran_id):
 
 
 @app.route('/delete/<int:albaran_id>')
+@login_required
 def delete_albaran(albaran_id):
     connection = get_db_connection()
     with connection.cursor() as cursor:
@@ -284,6 +332,7 @@ def delete_albaran(albaran_id):
     return redirect(url_for('index'))
 
 @app.route('/albaran/pdf/<int:albaran_id>', methods=['GET'])
+@login_required
 def pdf_albaran_view(albaran_id):
     connection = get_db_connection()
     with connection.cursor() as cursor:
