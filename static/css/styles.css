@@ -147,6 +147,24 @@ table td a:hover {
 }
 
 /* Button Link Styles */
+
+a.nobtn {
+    display: inline-block;
+    padding: 12px 18px;
+    color: #fff;
+    background-color: #FF0000;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+a.nobtn:hover {
+    background-color: #FF0000;
+}
+
+
 a.btn {
     display: inline-block;
     padding: 12px 18px;
@@ -161,6 +179,38 @@ a.btn {
 
 a.btn:hover {
     background-color: #0056b3;
+}
+
+a.sabtn {
+    display: inline-block;
+    padding: 12px 18px;
+    color: #fff;
+    background-color: #FF6347;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+a.sabtn:hover {
+    background-color: #FF4500;
+}
+
+a.ssbtn {
+    display: inline-block;
+    padding: 12px 18px;
+    color: #fff;
+    background-color: #BA55D3;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+a.ssbtn:hover {
+    background-color: #800080;
 }
 
 .uppercase {

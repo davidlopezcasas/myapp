@@ -19,17 +19,147 @@
             <td>
                 <a href="{{ url_for('edit_albaran', albaran_id=albaran.albaran_id) }}">Editar</a>
                 <a href="{{ url_for('view_albaran', albaran_id=albaran.albaran_id) }}">Ver</a>
+                <a href="{{ url_for('pdf_albaran_view', albaran_id=albaran.albaran_id) }}" target="_blank">Alb. Trans.</a>
+                <a href="#" class="open-costes-modal" data-albaran-id="{{ albaran.albaran_id }}" data-albaran-nombre="{{ albaran.nombre }}" data-albaran-fecha="{{ albaran.fecha }}">Costes</a>
                 <a href="{{ url_for('delete_albaran', albaran_id=albaran.albaran_id) }}" onclick="return confirmDelete()">Eliminar</a>
-                <a href="{{ url_for('pdf_albaran_view', albaran_id=albaran.albaran_id) }}" target="_blank">PDF</a>
             </td>
         </tr>
         {% endfor %}
     </table>
 </div>
 
+<!-- Ventana Modal para Costes -->
+<div id="costes-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modal-title"></h2>
+        <form id="costes-form">
+            <input type="hidden" id="albaran-id" name="albaran_id">
+            <label for="precio_transporte">Precio Transporte:</label>
+            <input type="number" id="precio_transporte" name="precio_transporte" step="0.01" required><br>
+            <label for="kilos_transporte">Kilos Transporte:</label>
+            <input type="number" id="kilos_transporte" name="kilos_transporte" step="0.01" required><br>
+            <button type="submit">Guardar</button>
+        </form>
+    </div>
+</div>
+
 <script>
 function confirmDelete() {
     return confirm('¿Estás seguro de que deseas eliminar este albarán?');
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    const costesModal = document.getElementById('costes-modal');
+    const costesForm = document.getElementById('costes-form');
+    const closeModalButton = costesModal.querySelector('.close');
+    const openCostesModalButtons = document.querySelectorAll('.open-costes-modal');
+
+    openCostesModalButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const albaranId = this.dataset.albaranId;
+            const albaranNombre = this.dataset.albaranNombre;
+            const albaranFecha = this.dataset.albaranFecha;
+
+            // Update modal title based on clicked albaran
+            document.getElementById('modal-title').innerText = `${albaranNombre} - ${albaranFecha}`;
+
+            // Set albaran id in hidden input
+            document.getElementById('albaran-id').value = albaranId;
+
+            // Fetch existing costs
+            fetch(`/get_costes/${albaranId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        document.getElementById('precio_transporte').value = data.preciotransporte || '';
+                        document.getElementById('kilos_transporte').value = data.kilostransporte || '';
+                    } else {
+                        document.getElementById('precio_transporte').value = '';
+                        document.getElementById('kilos_transporte').value = '';
+                    }
+                });
+
+            costesModal.style.display = 'block';
+        });
+    });
+
+    closeModalButton.addEventListener('click', function () {
+        costesModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function (event) {
+        if (event.target == costesModal) {
+            costesModal.style.display = 'none';
+        }
+    });
+
+    costesForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const albaranId = document.getElementById('albaran-id').value;
+        const precioTransporte = document.getElementById('precio_transporte').value;
+        const kilosTransporte = document.getElementById('kilos_transporte').value;
+
+        fetch(`/costes/${albaranId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                precio_transporte: precioTransporte,
+                kilos_transporte: kilosTransporte
+            })
+        }).then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Costes guardados con éxito');
+                costesModal.style.display = 'none';
+            } else {
+                alert('Error al guardar los costes');
+            }
+        });
+    });
+});
 </script>
+
+
+<style>
+/* Añadir estilos para el modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+</style>
+
 {% endblock %}

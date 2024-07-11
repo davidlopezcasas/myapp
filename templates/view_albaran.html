@@ -4,6 +4,16 @@
 <div class="container">
     <h2>Detalles del Albarán</h2>
     <a href="{{ url_for('index') }}" class="btn btn-primary">Volver</a>
+    {% if albaran_previous_id %}
+        <a href="{{ url_for('view_albaran', albaran_id=albaran_previous_id) }}" class="sabtn btn-primary">Anterior</a>
+    {% else %}
+        <button class="nobtn btn-primary" disabled>Anterior</button>
+    {% endif %}
+    {% if albaran_next_id %}
+        <a href="{{ url_for('view_albaran', albaran_id=albaran_next_id) }}" class="ssbtn btn-primary">Siguiente</a>
+    {% else %}
+        <a href="{{ url_for('index') }}" class="nobtn btn-primary">Siguiente</a>
+    {% endif %}
     <p><strong>Número de Albarán:</strong> {{ albaran.albaran_id }}</p>
     <p><strong>Cliente:</strong> {{ cliente.nombre }}</p>
     <p><strong>Fecha:</strong> {{ albaran.fecha }}</p>
@@ -42,5 +52,15 @@
     </div>
     {% endfor %}
     <a href="{{ url_for('index') }}" class="btn btn-primary">Volver</a>
+    {% if albaran_previous_id %}
+        <a href="{{ url_for('view_albaran', albaran_id=albaran_previous_id) }}" class="sabtn btn-primary">Anterior</a>
+    {% else %}
+        <button class="nobtn btn-primary" disabled>Anterior</button>
+    {% endif %}
+    {% if albaran_next_id %}
+        <a href="{{ url_for('view_albaran', albaran_id=albaran_next_id) }}" class="ssbtn btn-primary">Siguiente</a>
+    {% else %}
+        <a href="{{ url_for('index') }}" class="nobtn btn-primary">Siguiente</a>
+    {% endif %}
 </div>
 {% endblock %}

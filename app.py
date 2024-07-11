@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file, make_response
+from flask import Flask, render_template, request, redirect, url_for, send_file, make_response, jsonify
 import pymysql
 from weasyprint import HTML, CSS
 import io
@@ -27,6 +27,31 @@ def index():
     connection.close()
     return render_template('index.html', albaranes=albaranes)
 
+@app.route('/get_costes/<int:albaran_id>', methods=['GET'])
+def get_costes(albaran_id):
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT preciotransporte, kilostransporte FROM albaran WHERE albaran_id = %s", (albaran_id,))
+        costes = cursor.fetchone()
+    connection.close()
+    return jsonify(costes)
+
+
+@app.route('/costes/<int:albaran_id>', methods=['POST'])
+def guardar_costes(albaran_id):
+    data = request.get_json()
+    connection = get_db_connection()
+    precio_transporte = data['precio_transporte']
+    kilos_transporte = data['kilos_transporte']
+
+    with connection.cursor() as cursor:
+        cursor.execute("UPDATE albaran SET preciotransporte = %s, kilostransporte = %s WHERE albaran_id = %s",
+                       (precio_transporte, kilos_transporte, albaran_id))
+        connection.commit()
+
+    connection.close()
+    return jsonify(success=True)
+
 
 @app.route('/albaran/<int:albaran_id>')
 def view_albaran(albaran_id):
@@ -34,6 +59,17 @@ def view_albaran(albaran_id):
     with connection.cursor() as cursor:
         cursor.execute("SELECT * FROM albaran WHERE albaran_id = %s", (albaran_id,))
         albaran = cursor.fetchone()
+
+        # Obtener el siguiente albarán
+        cursor.execute("SELECT albaran_id FROM albaran WHERE albaran_id > %s ORDER BY albaran_id ASC LIMIT 1",
+                       (albaran_id,))
+        next_albaran = cursor.fetchone()
+        albaran_next_id = next_albaran['albaran_id'] if next_albaran else None
+
+        cursor.execute("SELECT albaran_id FROM albaran WHERE albaran_id < %s ORDER BY albaran_id DESC LIMIT 1",
+                       (albaran_id,))
+        previous_albaran = cursor.fetchone()
+        albaran_previous_id = previous_albaran['albaran_id'] if previous_albaran else None
 
         cursor.execute("SELECT * FROM cliente WHERE cliente_id = %s", (albaran['cliente_id'],))
         cliente = cursor.fetchone()
@@ -47,7 +83,6 @@ def view_albaran(albaran_id):
                 (albaran_id, linea['linea_id']))
             etiquetas = cursor.fetchall()
 
-            # Convertir kilos en una lista
             for etiqueta in etiquetas:
                 if 'kilos' in etiqueta:
                     etiqueta['kilos'] = etiqueta['kilos'].split()
@@ -55,7 +90,8 @@ def view_albaran(albaran_id):
             linea['etiquetas'] = etiquetas
 
     connection.close()
-    return render_template('view_albaran.html', albaran=albaran, cliente=cliente, lineas_producto=lineas_producto)
+    return render_template('view_albaran.html', albaran=albaran, cliente=cliente, lineas_producto=lineas_producto,
+                           albaran_next_id=albaran_next_id, albaran_previous_id=albaran_previous_id)
 
 
 @app.route('/create', methods=['GET', 'POST'])
