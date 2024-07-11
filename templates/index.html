@@ -3,12 +3,14 @@
 {% block content %}
 <div class="container">
     <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" class="titulo-imagen">
-    <!-- Botón de Logout -->
-    <div class="text-right" style="margin-bottom: 20px;">
-        <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+
+    <!-- Botones alineados -->
+    <div class="d-flex justify-content-between" style="margin-bottom: 20px;">
+        <a href="{{ url_for('create_albaran') }}" class="btn btn-primary">Crear nuevo albarán</a>
     </div>
 
-    <a href="{{ url_for('create_albaran') }}" class="btn btn-primary">Crear nuevo albarán</a>
+
+
     <table>
         <tr>
             <th>Número</th>
@@ -126,7 +128,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
-
 
 <style>
 /* Añadir estilos para el modal */
