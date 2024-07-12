@@ -7,6 +7,8 @@
     <!-- Botones alineados -->
     <div class="d-flex justify-content-between" style="margin-bottom: 20px;">
         <a href="{{ url_for('create_albaran') }}" class="btn btn-primary">Crear nuevo albarán</a>
+        <a href="{{ url_for('create_gasto') }}" class="ssbtn btn-primary">Insertar gasto</a>
+        <a href="{{ url_for('ver_gastos') }}" class="sabtn btn-primary">Ver gastos</a>
     </div>
 
 
@@ -26,7 +28,7 @@
             <td>
                 <a href="{{ url_for('edit_albaran', albaran_id=albaran.albaran_id) }}">Editar</a>
                 <a href="{{ url_for('view_albaran', albaran_id=albaran.albaran_id) }}">Ver</a>
-                <a href="{{ url_for('pdf_albaran_view', albaran_id=albaran.albaran_id) }}" target="_blank">Alb. Trans.</a>
+                <a href="{{ url_for('pdf_albaran_view', albaran_id=albaran.albaran_id) }}" target="_blank">Transporte</a>
                 <a href="#" class="open-costes-modal" data-albaran-id="{{ albaran.albaran_id }}" data-albaran-nombre="{{ albaran.nombre }}" data-albaran-fecha="{{ albaran.fecha }}">Costes</a>
                 <a href="{{ url_for('delete_albaran', albaran_id=albaran.albaran_id) }}" onclick="return confirmDelete()">Eliminar</a>
             </td>

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" class="titulo-imagen">
+
+    <!-- Botones alineados -->
+    <div class="d-flex justify-content-between" style="margin-bottom: 20px;">
+        <a href="{{ url_for('index') }}" class="btn btn-primary">Volver</a>
+        <a href="{{ url_for('create_gasto') }}" class="ssbtn btn-primary">Insertar gasto</a>
+    </div>
+
+    <table>
+        <tr>
+            <th>EMPRESA</th>
+            <th>Fecha</th>
+            <th>Importe</th>
+        </tr>
+        {% for gasto in gastos %}
+        <tr>
+            <td>{{ gasto.nombreempresa }}</td>
+            <td>{{ gasto.fecha }}</td>
+            <td>{{ gasto.importe }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<style>
+.titulo-imagen {
+    display: block;
+    margin: 30px 0 50px 0;
+    width: 400px; /* Ajusta el ancho deseado */
+    height: auto; /* Mantiene la proporción de la imagen */
+}
+</style>
+
+{% endblock %}

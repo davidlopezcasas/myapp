@@ -69,6 +69,16 @@ def index():
     connection.close()
     return render_template('index.html', albaranes=albaranes)
 
+@app.route('/gastos')
+@login_required
+def ver_gastos():
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM gasto g ORDER BY g.fecha DESC")
+        gastos = cursor.fetchall()
+    connection.close()
+    return render_template('ver_gastos.html', gastos=gastos)
+
 @app.route('/get_costes/<int:albaran_id>', methods=['GET'])
 @login_required
 def get_costes(albaran_id):
@@ -222,6 +232,34 @@ def create_albaran():
     connection.close()
     return render_template('create_albaran.html', clientes=clientes, productos=productos, descripciones=descripciones,
                            tipos_caja=tipos_caja, tipos_zona=tipos_zona, tipos_arte=tipos_arte)
+
+
+@app.route('/creategasto', methods=['GET', 'POST'])
+@login_required
+def create_gasto():
+    connection = get_db_connection()
+    if request.method == 'POST':
+        nombreempresa = request.form['nombreempresa']
+        importe = request.form['importe']
+        fecha = request.form['fecha']
+
+        try:
+            with connection.cursor() as cursor:
+                # Insertar albarán
+                cursor.execute(
+                    "INSERT INTO gasto (nombreempresa, importe, fecha) VALUES (%s, %s, %s)",
+                    (nombreempresa, importe, fecha)
+                )
+            connection.commit()
+        finally:
+            connection.close()
+        return redirect(url_for('index'))
+
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM empresasgastos")
+        gastos = cursor.fetchall()
+    connection.close()
+    return render_template('create_gasto.html', gastos=gastos)
 
 
 @app.route('/edit/<int:albaran_id>', methods=['GET', 'POST'])
