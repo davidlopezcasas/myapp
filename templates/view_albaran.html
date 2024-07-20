@@ -15,7 +15,7 @@
         <a href="{{ url_for('index') }}" class="nobtn btn-primary">Siguiente</a>
     {% endif %}
     <p><strong>Número de Albarán:</strong> {{ albaran.albaran_id }}</p>
-    <p><strong>Cliente:</strong> {{ cliente.nombre }}</p>
+    <p><strong>Cliente:</strong> {{ cliente.nombre }} - {{ cliente.cliente_id }}</p>
     <p><strong>Fecha:</strong> {{ albaran.fecha }}</p>
     <p><strong>Portes Totales:</strong> {{ albaran.portestotales }}</p>
     <h3>Líneas de Producto</h3>

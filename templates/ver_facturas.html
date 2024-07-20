@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" class="titulo-imagen">
+
+    <!-- Botones alineados -->
+    <div class="d-flex justify-content-between" style="margin-bottom: 20px;">
+        <a href="{{ url_for('index') }}" class="btn btn-primary">Volver</a>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Número</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for factura in facturas %}
+            <tr>
+                <td>{{ factura.factura_id }}</td>
+                <td>{{ factura.nombre }}</td>
+                <td>{{ factura.fecha }}</td>
+                <!--<td>{{ 'Sí' if factura.pagada else 'No' }}</td>-->
+                <td>
+                    <!-- Acción para marcar como pagada o no pagada -->
+                    <a href="#"
+                       class="btn {% if factura.pagada %}ssbtn{% else %}sabtn{% endif %}"
+                       onclick="togglePagada('{{ factura.factura_id }}', this); return false;">
+                        {% if factura.pagada %}
+                        Pagada
+                        {% else %}
+                        No pagada
+                        {% endif %}
+                    </a>
+
+                    <!-- Acción para ver el PDF -->
+                    <a href="{{ url_for('view_factura_factura', factura_id=factura.factura_id) }}" class="btn btn-secondary">
+                        Ver PDF
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function togglePagada(facturaId, element) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', `/toggle_pagada/${facturaId}`);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Actualiza la página para reflejar el cambio
+                location.reload();
+            } else {
+                alert('Hubo un problema al intentar actualizar el estado.');
+            }
+        };
+        xhr.send();
+    }
+</script>
+
+<style>
+ /* Estilos para enlaces */
+a.nobtn, a.btn, a.sabtn, a.ssbtn {
+    display: inline-block;
+    padding: 12px 18px;
+    color: #fff;
+    border: none;  /* Elimina el borde */
+    border-radius: 5px;
+    text-decoration: none;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+/* Estilos para botones */
+button.nobtn, button.btn, button.sabtn, button.ssbtn {
+    display: inline-block;
+    padding: 12px 18px;
+    color: #fff;
+    border: none;  /* Elimina el borde */
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+/* Colores específicos para cada clase */
+a.nobtn, button.nobtn {
+    background-color: #FF0000;
+}
+
+a.nobtn:hover, button.nobtn:hover {
+    background-color: #FF0000;
+}
+
+a.btn, button.btn {
+    background-color: #007bff;
+}
+
+a.btn:hover, button.btn:hover {
+    background-color: #0056b3;
+}
+
+a.sabtn, button.sabtn {
+    background-color: #FF6347;
+}
+
+a.sabtn:hover, button.sabtn:hover {
+    background-color: #FF4500;
+}
+
+a.ssbtn, button.ssbtn {
+    background-color: #BA55D3;
+}
+
+a.ssbtn:hover, button.ssbtn:hover {
+    background-color: #800080;
+}
+
+.titulo-imagen {
+    display: block;
+    margin: 30px 0 50px 0;
+    width: 400px; /* Ajusta el ancho deseado */
+    height: auto; /* Mantiene la proporción de la imagen */
+}
+</style>
+
+{% endblock %}

@@ -213,10 +213,26 @@ a.ssbtn:hover {
     background-color: #800080;
 }
 
+a.svbtn {
+    display: inline-block;
+    padding: 12px 18px;
+    color: #fff;
+    background-color: #008000;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+a.svbtn:hover {
+    background-color: #004d00;
+}
+
 .uppercase {
     text-transform: uppercase;
 }
 
 .etiqueta-kilos-input {
-        display: none;
-    }
+    display: none;
+}

@@ -9,9 +9,8 @@
         <a href="{{ url_for('create_albaran') }}" class="btn btn-primary">Crear nuevo albarán</a>
         <a href="{{ url_for('create_gasto') }}" class="ssbtn btn-primary">Insertar gasto</a>
         <a href="{{ url_for('ver_gastos') }}" class="sabtn btn-primary">Ver gastos</a>
+        <a href="{{ url_for('ver_facturas') }}" class="svbtn btn-primary">Ver facturas</a>
     </div>
-
-
 
     <table>
         <tr>
@@ -29,8 +28,28 @@
                 <a href="{{ url_for('edit_albaran', albaran_id=albaran.albaran_id) }}">Editar</a>
                 <a href="{{ url_for('view_albaran', albaran_id=albaran.albaran_id) }}">Ver</a>
                 <a href="{{ url_for('pdf_albaran_view', albaran_id=albaran.albaran_id) }}" target="_blank">Transporte</a>
-                <a href="#" class="open-costes-modal" data-albaran-id="{{ albaran.albaran_id }}" data-albaran-nombre="{{ albaran.nombre }}" data-albaran-fecha="{{ albaran.fecha }}">Costes</a>
+                <a class="open-costes-modal" data-albaran-id="{{ albaran.albaran_id }}" data-albaran-nombre="{{ albaran.nombre }}" data-albaran-fecha="{{ albaran.fecha }}">Costes</a>
                 <a href="{{ url_for('delete_albaran', albaran_id=albaran.albaran_id) }}" onclick="return confirmDelete()">Eliminar</a>
+                <div class="dropdown">
+                    <span class="dropdown-toggle">Más</span>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item">
+                            <label for="pdf_file_{{ albaran.albaran_id }}" style="display: none;" class="normal-weight">Subir archivo PDF</label>
+                            <input type="file" name="pdf_file" id="pdf_file_{{ albaran.albaran_id }}" accept="application/pdf" style="display: none;" onchange="this.form.submit()">
+                        </a>
+                        {% if albaran.pdfventa %}
+                        <a href="{{ url_for('view_pdf', albaran_id=albaran.albaran_id) }}" class="dropdown-item" target="_blank">Albaran venta</a>
+                        {% else %}
+                        <span class="dropdown-item disabled">Albaran no disponible</span>
+                        {% endif %}
+                        {% if albaran.factura_id %}
+                        <a href="{{ url_for('view_factura', albaran_id=albaran.albaran_id) }}" class="dropdown-item" target="_blank">Ver factura</a>
+                        {% else %}
+                        <span class="dropdown-item disabled">Factura no disponible</span>
+                        {% endif %}
+                        <a class="open-factura-modal" data-albaran-id="{{ albaran.albaran_id }}" data-cliente-id="{{ albaran.cliente_id }}">Añadir Factura</a>
+                    </div>
+                </div>
             </td>
         </tr>
         {% endfor %}
@@ -53,16 +72,32 @@
     </div>
 </div>
 
-<script>
-function confirmDelete() {
-    return confirm('¿Estás seguro de que deseas eliminar este albarán?');
-}
+<!-- Ventana Modal para Factura -->
+<div id="factura-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close-factura">&times;</span>
+        <h2>Añadir Número de Factura</h2>
+        <form id="factura-form">
+            <input type="hidden" id="factura-albaran-id" name="albaran_id">
+            <input type="hidden" id="factura-cliente-id" name="cliente_id">
+            <label for="factura_id">Número de Factura:</label>
+            <input type="number" id="factura_id" name="factura_id" required><br>
+            <button type="submit">Guardar</button>
+        </form>
+    </div>
+</div>
 
+<script>
 document.addEventListener('DOMContentLoaded', function () {
     const costesModal = document.getElementById('costes-modal');
     const costesForm = document.getElementById('costes-form');
     const closeModalButton = costesModal.querySelector('.close');
     const openCostesModalButtons = document.querySelectorAll('.open-costes-modal');
+
+    const facturaModal = document.getElementById('factura-modal');
+    const facturaForm = document.getElementById('factura-form');
+    const closeFacturaButton = facturaModal.querySelector('.close-factura');
+    const openFacturaModalButtons = document.querySelectorAll('.open-factura-modal');
 
     openCostesModalButtons.forEach(button => {
         button.addEventListener('click', function () {
@@ -81,8 +116,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(response => response.json())
                 .then(data => {
                     if (data) {
-                        document.getElementById('precio_transporte').value = data.preciotransporte || '';
-                        document.getElementById('kilos_transporte').value = data.kilostransporte || '';
+                        document.getElementById('precio_transporte').value = data.precio_transporte || '';
+                        document.getElementById('kilos_transporte').value = data.kilos_transporte || '';
                     } else {
                         document.getElementById('precio_transporte').value = '';
                         document.getElementById('kilos_transporte').value = '';
@@ -121,10 +156,61 @@ document.addEventListener('DOMContentLoaded', function () {
         }).then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('Costes guardados con éxito');
+                // Reset form fields
+                document.getElementById('precio_transporte').value = '';
+                document.getElementById('kilos_transporte').value = '';
                 costesModal.style.display = 'none';
             } else {
                 alert('Error al guardar los costes');
+            }
+        });
+    });
+
+    openFacturaModalButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const albaranId = this.dataset.albaranId;
+            const clienteId = this.dataset.clienteId;
+
+            // Set albaran id and cliente id in hidden inputs
+            document.getElementById('factura-albaran-id').value = albaranId;
+            document.getElementById('factura-cliente-id').value = clienteId;
+
+            facturaModal.style.display = 'block';
+        });
+    });
+
+    closeFacturaButton.addEventListener('click', function () {
+        facturaModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function (event) {
+        if (event.target == facturaModal) {
+            facturaModal.style.display = 'none';
+        }
+    });
+
+    facturaForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const albaranId = document.getElementById('factura-albaran-id').value;
+        const clienteId = document.getElementById('factura-cliente-id').value;
+        const facturaId = document.getElementById('factura_id').value;
+
+        fetch(`/fk_factura/${albaranId}/cliente/${clienteId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                factura_id: facturaId
+            })
+        }).then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Reset form field
+                document.getElementById('factura_id').value = '';
+                facturaModal.style.display = 'none';
+            } else {
+                alert('Error al añadir la factura');
             }
         });
     });
@@ -155,15 +241,14 @@ document.addEventListener('DOMContentLoaded', function () {
     width: 80%;
 }
 
-.close {
+.close, .close-factura {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
 }
 
-.close:hover,
-.close:focus {
+.close:hover, .close:focus, .close-factura:hover, .close-factura:focus {
     color: black;
     text-decoration: none;
     cursor: pointer;
@@ -172,8 +257,53 @@ document.addEventListener('DOMContentLoaded', function () {
 .titulo-imagen {
     display: block;
     margin: 30px 0 50px 0;
-    width: 400px; /* Ajusta el ancho deseado */
+    width: 400px;
     height: auto; /* Mantiene la proporción de la imagen */
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    cursor: pointer;
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: white;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-menu .dropdown-item{
+    padding: 8px 16px;
+    display: block;
+    text-decoration: none;
+    color: #007bff;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown-item.disabled {
+    color: #007bff;
+}
+
+.normal-weight {
+    font-weight: normal;
+}
+
+.open-factura-modal {
+    padding: 8px 16px;
+    display: block;
+    text-decoration: none;
+    color: #007bff;
 }
 </style>
 

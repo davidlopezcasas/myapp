@@ -408,5 +408,147 @@ def pdf_albaran_view(albaran_id):
 
     return response
 
+
+@app.route('/upload_pdf/<int:albaran_id>', methods=['POST'])
+@login_required
+def upload_pdf(albaran_id):
+    if 'pdf_file' not in request.files:
+        flash('No file part')
+        return redirect(request.url)
+
+    file = request.files['pdf_file']
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+
+    if file and file.filename.endswith('.pdf'):
+        pdf_data = file.read()
+        connection = get_db_connection()
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("UPDATE albaran SET pdfventa = %s WHERE albaran_id = %s", (pdf_data, albaran_id))
+                connection.commit()
+        finally:
+            connection.close()
+        flash('PDF uploaded successfully')
+        return redirect(url_for('index'))
+    else:
+        flash('Invalid file format')
+        return redirect(request.url)
+
+
+@app.route('/view_pdf/<int:albaran_id>', methods=['GET'])
+@login_required
+def view_pdf(albaran_id):
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT pdfventa FROM albaran WHERE albaran_id = %s", (albaran_id,))
+        result = cursor.fetchone()
+    connection.close()
+
+    if result and result['pdfventa']:
+        response = make_response(result['pdfventa'])
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = 'inline; filename=albaran_{}.pdf'.format(albaran_id)
+        return response
+    else:
+        flash('No PDF file found')
+        return redirect(url_for('index'))
+
+
+@app.route('/fk_factura/<int:albaran_id>/cliente/<int:cliente_id>', methods=['POST'])
+@login_required
+def update_factura_and_cliente(albaran_id, cliente_id):
+    data = request.get_json()
+    connection = get_db_connection()
+    factura_id = data['factura_id']
+
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("UPDATE albaran SET factura_id = %s WHERE albaran_id = %s",
+                           (factura_id, albaran_id))
+            cursor.execute("UPDATE factura SET cliente_id = %s WHERE factura_id = %s",
+                           (cliente_id, factura_id))
+            connection.commit()
+    except Exception as e:
+        connection.rollback()
+        return jsonify({'error': str(e)}), 500
+    finally:
+        connection.close()
+
+    return jsonify(success=True)
+
+
+@app.route('/view_factura/<int:albaran_id>', methods=['GET'])
+@login_required
+def view_factura(albaran_id):
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT pdffactura FROM albaran a JOIN factura f ON a.factura_id = f.factura_id WHERE albaran_id = %s", (albaran_id,))
+        result = cursor.fetchone()
+    connection.close()
+
+    if result and result['pdffactura']:
+        response = make_response(result['pdffactura'])
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = 'inline; filename=albaran_{}.pdf'.format(albaran_id)
+        return response
+    else:
+        flash('No PDF file found')
+        return redirect(url_for('index'))
+
+@app.route('/view_factura_factura/<int:factura_id>', methods=['GET'])
+@login_required
+def view_factura_factura(factura_id):
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT pdffactura FROM factura f WHERE factura_id = %s", (factura_id,))
+        result = cursor.fetchone()
+    connection.close()
+
+    if result and result['pdffactura']:
+        response = make_response(result['pdffactura'])
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = 'inline; filename=factura_{}.pdf'.format(factura_id)
+        return response
+    else:
+        flash('No PDF file found')
+        return redirect(url_for('index'))
+
+
+@app.route('/facturas')
+@login_required
+def ver_facturas():
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM factura f JOIN cliente c ON f.cliente_id = c.cliente_id ORDER BY f.factura_id DESC")
+        facturas = cursor.fetchall()
+    connection.close()
+    return render_template('ver_facturas.html', facturas=facturas)
+
+
+@app.route('/toggle_pagada/<int:factura_id>', methods=['POST'])
+@login_required
+def toggle_pagada(factura_id):
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT pagada FROM factura WHERE factura_id = %s", (factura_id,))
+        result = cursor.fetchone()
+
+        if result:
+            new_status = not result['pagada']
+            cursor.execute("UPDATE factura SET pagada = %s WHERE factura_id = %s", (new_status, factura_id))
+            connection.commit()
+            flash('Estado de pago actualizado correctamente.')
+        else:
+            flash('Factura no encontrada.')
+
+    connection.close()
+    return redirect(url_for('ver_facturas'))
+
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
