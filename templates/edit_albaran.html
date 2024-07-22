@@ -64,10 +64,10 @@
             </select><br>
 
             <label for="barco">Barco:</label>
-            <input type="text" id="barco" name="barco[]" class="uppercase"><br>
+            <input type="text" id="barco" name="barco[]" class="uppercase" value="{{ linea.barco }}"><br>
 
             <label for="obs">Observaciones:</label>
-            <input type="text" id="obs" name="obs[]" class="uppercase"><br>
+            <input type="text" id="obs" name="obs[]" class="uppercase" value="{{ linea.observaciones }}"><br>
 
             <label for="tipoarte">Tipo de Arte:</label>
             <select id="tipoarte" name="tipoarte[]">
@@ -122,5 +122,11 @@
     <div id="qr-reader" style="width:500px"></div>
     <button id="close-qr-scanner">Cerrar</button>
 </div>
+
+<style>
+    body {
+        margin: 50px 100px 100px 100px;
+    }
+</style>
 
 {% endblock %}
