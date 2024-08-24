@@ -88,6 +88,9 @@
 </div>
 
 <script>
+function confirmDelete() {
+    return confirm('¿Estás segura de que deseas eliminar este albarán?');
+}
 document.addEventListener('DOMContentLoaded', function () {
     const costesModal = document.getElementById('costes-modal');
     const costesForm = document.getElementById('costes-form');

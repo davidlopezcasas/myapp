@@ -15,16 +15,45 @@
             <th>EMPRESA</th>
             <th>Fecha</th>
             <th>Importe</th>
+            <th>Pagado</th>
         </tr>
         {% for gasto in gastos %}
         <tr>
             <td>{{ gasto.nombreempresa }}</td>
             <td>{{ gasto.fecha }}</td>
             <td>{{ gasto.importe }}</td>
+            <td>
+                    <!-- Acción para marcar como pagada o no pagada -->
+                    <a href="#"
+                       class="btn {% if gasto.pagado %}ssbtn{% else %}sabtn{% endif %}"
+                       onclick="togglePagado('{{ gasto.gasto_id }}', this); return false;">
+                        {% if gasto.pagado %}
+                        Pagado
+                        {% else %}
+                        No pagado
+                        {% endif %}
+                    </a>
+                </td>
         </tr>
         {% endfor %}
     </table>
 </div>
+
+<script>
+    function togglePagado(gastoId, element) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', `/toggle_pagado/${gastoId}`);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                location.reload();
+            } else {
+                alert('Hubo un problema al intentar actualizar el estado.');
+            }
+        };
+        xhr.send();
+    }
+</script>
 
 <style>
 .titulo-imagen {

@@ -240,20 +240,21 @@ def create_gasto():
     connection = get_db_connection()
     if request.method == 'POST':
         nombreempresa = request.form['nombreempresa']
-        importe = request.form['importe']
+        importe_aux = (request.form['importe']).replace(",", ".")
+        importe = float(importe_aux)
         fecha = request.form['fecha']
 
         try:
             with connection.cursor() as cursor:
                 # Insertar albarán
                 cursor.execute(
-                    "INSERT INTO gasto (nombreempresa, importe, fecha) VALUES (%s, %s, %s)",
+                    "INSERT INTO gasto (nombreempresa, importe, fecha, pagado) VALUES (%s, %s, %s, 0)",
                     (nombreempresa, importe, fecha)
                 )
             connection.commit()
         finally:
             connection.close()
-        return redirect(url_for('index'))
+        return redirect(url_for('ver_gastos'))
 
     with connection.cursor() as cursor:
         cursor.execute("SELECT * FROM empresasgastos")
@@ -545,6 +546,25 @@ def toggle_pagada(factura_id):
 
     connection.close()
     return redirect(url_for('ver_facturas'))
+
+@app.route('/toggle_pagado/<int:gasto_id>', methods=['POST'])
+@login_required
+def toggle_pagado(gasto_id):
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT pagado FROM gasto WHERE gasto_id = %s", (gasto_id,))
+        result = cursor.fetchone()
+
+        if result:
+            new_status = not result['pagado']
+            cursor.execute("UPDATE gasto SET pagado = %s WHERE gasto_id = %s", (new_status, gasto_id))
+            connection.commit()
+            flash('Estado de pago actualizado correctamente.')
+        else:
+            flash('Gasto no encontrado.')
+
+    connection.close()
+    return redirect(url_for('ver_gastos'))
 
 
 
