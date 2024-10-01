@@ -8,7 +8,7 @@ WORKDIR /clientes
 COPY requirements.txt .
 
 # Instala las dependencias
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip3 install --break-system-packages --no-cache-dir -r requirements.txt
 
 # Copia el resto de tu aplicación al contenedor
 COPY . .
