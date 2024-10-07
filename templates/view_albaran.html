@@ -2,7 +2,10 @@
 
 {% block content %}
 <div class="container">
-    <h2>Detalles del Albarán</h2>
+    <div class="header-container">
+        <h2>DETALLES DE ALBARÁN</h2>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" class="titulo-imagen">
+    </div>
     <a href="{{ url_for('index') }}" class="btn btn-primary">Volver</a>
     {% if albaran_previous_id %}
         <a href="{{ url_for('view_albaran', albaran_id=albaran_previous_id) }}" class="sabtn btn-primary">Anterior</a>
@@ -14,41 +17,28 @@
     {% else %}
         <a href="{{ url_for('index') }}" class="nobtn btn-primary">Siguiente</a>
     {% endif %}
-    <p><strong>Número de Albarán:</strong> {{ albaran.albaran_id }}</p>
-    <p><strong>Cliente:</strong> {{ cliente.nombre }} - {{ cliente.cliente_id }}</p>
-    <p><strong>Fecha:</strong> {{ albaran.fecha }}</p>
-    <p><strong>Portes Totales:</strong> {{ albaran.portestotales }}</p>
-    <h3>Líneas de Producto</h3>
+    <p><i class="fas fa-file-invoice" style="color: #1abc9c;"></i><strong> Número de Albarán:</strong> {{ albaran.albaran_id }}</p>
+    <p><i class="fas fa-user" style="color: #3498db;"></i><strong> Cliente:</strong> {{ cliente.nombre }} - {{ cliente.cliente_id }}</p>
+    <p><i class="fas fa-calendar-alt" style="color: #f39c12;"></i><strong> Fecha:</strong> {{ albaran.fecha }}</p>
+    <p><i class="fas fa-euro-sign" style="color: #e74c3c;"></i><strong> Portes Totales:</strong> {{ albaran.portestotales }}</p>
+    <h3><i class="fas fa-box" style="color: #9b59b6;"></i> Líneas de Producto</h3>
     {% for linea in lineas_producto %}
     <div class="linea-producto">
-        <p><strong>Nombre Producto:</strong> {{ linea.nombreproducto }}</p>
-        <p><strong>Intervalo Pesos:</strong> {{ linea.intervalopesos }}</p>
-        <p><strong>Descripción:</strong> {{ linea.descripcion }}</p>
-        <p><strong>Número de Cajas:</strong> {{ linea.numerocajas }}</p>
-        <p><strong>Tipo de Caja:</strong> {{ linea.tipocaja }}</p>
-        <p><strong>Kilos:</strong> {{ linea.kilos }}</p>
-        <p><strong>Precio:</strong> {{ linea.precio }}</p>
-        <p><strong>Lote:</strong> {{ linea.lote | upper }}</p>
-        <p><strong>Zona:</strong> {{ linea.zona }}</p>
-        <p><strong>Barco:</strong> {{ linea.barco }}</p>
-        <p><strong>Observaciones:</strong> {{ linea.obs }}</p>
-        <p><strong>Arte:</strong> {{ linea.arte }}</p>
-        <p><strong>Precio Compra:</strong> {{ linea.preciocompra }}</p>
-        <p><strong>Portes/Kg:</strong> {{ linea.porteskg }}</p>
-        <p><strong>Beneficio/Kg:</strong> {{ linea.beneficiokg }}</p>
-        <h4>Etiquetas</h4>
-        <ul>
-            {% for etiqueta in linea.etiquetas %}
-            <li>
-                <ul>
-                    {% for kilo in etiqueta.kilos %}
-                    <li>{{ kilo }}</li>
-                    {% endfor %}
-                </ul>
-            </li>
-            <li>{{ etiqueta.qretiquetacompra }}</li>
-            {% endfor %}
-        </ul>
+        <p><i class="fas fa-tag" style="color: #8e44ad;"></i> <strong> Nombre Producto:</strong> {{ linea.nombreproducto }}</p>
+        <p><i class="fas fa-balance-scale" style="color: #f1c40f;"></i><strong> Intervalo Pesos:</strong> {{ linea.intervalopesos }}</p>
+        <p><i class="fas fa-info-circle" style="color: #e67e22;"></i><strong> Descripción:</strong> {{ linea.descripcion }}</p>
+        <p><i class="fas fa-boxes" style="color: #e74c3c;"></i> <strong> Número de Cajas:</strong> {{ linea.numerocajas }}</p>
+        <p><i class="fas fa-cube" style="color: #3498db;"></i><strong> Tipo de Caja:</strong> {{ linea.tipocaja }}</p>
+        <p><i class="fas fa-balance-scale" style="color: #9b59b6;"></i><strong> Kilos:</strong> {{ linea.kilos }}</p>
+        <p><i class="fas fa-tag" style="color: #f39c12;"></i><strong> Precio:</strong> {{ linea.precio }}</p>
+        <p><i class="fas fa-cube" style="color: #2ecc71;"></i> <strong>Lote:</strong> {{ linea.lote | upper }}</p>
+        <p><i class="fas fa-map-marker-alt" style="color: #e67e22;"></i><strong> Zona:</strong> {{ linea.zona }}</p>
+        <p><i class="fas fa-ship" style="color: #1abc9c;"></i><strong> Barco:</strong> {{ linea.barco }}</p>
+        <p><i class="fas fa-comments" style="color: #3498db;"></i><strong> Observaciones:</strong> {{ linea.obs }}</p>
+        <p><i class="fas fa-fish" style="color: #e74c3c;"></i><strong> Arte:</strong> {{ linea.arte }}</p>
+        <p><i class="fas fa-euro-sign" style="color: #2ecc71;"></i><strong> Precio Compra:</strong> {{ linea.preciocompra }}</p>
+        <p><i class="fas fa-euro-sign" style="color: #e74c3c;"></i><strong> Portes/Kg:</strong> {{ linea.porteskg }}</p>
+        <p><i class="fas fa-euro-sign" style="color: #9b59b6;"></i><strong> Beneficio/Kg:</strong> {{ linea.beneficiokg }}</p>
     </div>
     {% endfor %}
     <a href="{{ url_for('index') }}" class="btn btn-primary">Volver</a>
@@ -63,4 +53,28 @@
         <a href="{{ url_for('index') }}" class="nobtn btn-primary">Siguiente</a>
     {% endif %}
 </div>
+<style>
+    body {
+        margin: 50px 100px 100px 100px;
+    }
+    .titulo-imagen {
+        display: block;
+        margin: 30px 0 50px 0;
+        width: 400px;
+        height: auto; /* Mantiene la proporción de la imagen */
+    }
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px; /* Espacio entre el encabezado y el formulario */
+    }
+    h2 {
+        margin: 0; /* Eliminar márgenes para mejor alineación */
+    }
+    .titulo-imagen {
+        height: 50px; /* Ajusta el tamaño según sea necesario */
+        width: auto; /* Mantener la proporción del logo */
+    }
+</style>
 {% endblock %}

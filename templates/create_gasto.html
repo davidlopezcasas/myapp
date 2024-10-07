@@ -1,19 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2>Insertar gasto</h2>
+    <div class="header-container">
+        <h2>Insertar gasto</h2>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" class="titulo-imagen">
+    </div>
     <form action="{{ url_for('create_gasto') }}" method="post">
-        <label for="nombreempresa">Empresa:</label>
+        <label for="nombreempresa"><i class="fas fa-building" style="color: #3498db;"></i> Empresa:</label>
         <select id="nombreempresa" name="nombreempresa">
             {% for gasto in gastos %}
             <option value="{{ gasto.nombreempresa }}">{{ gasto.nombreempresa }}</option>
             {% endfor %}
         </select><br>
 
-        <label for="fecha">Fecha:</label>
+        <label for="fecha"><i class="fas fa-calendar-alt" style="color: #f39c12;"></i> Fecha:</label>
         <input type="date" id="fecha" name="fecha" required><br>
 
-        <label for="importe">Importe:</label>
+        <label for="importe"><i class="fas fa-euro-sign" style="color: #2ecc71;"></i> Importe:</label>
         <input type="text" id="importe" name="importe" required><br>
 
         <button type="submit">Guardar Gasto</button>
@@ -22,6 +25,25 @@
 <style>
     body {
         margin: 50px 100px 100px 100px;
+    }
+    .titulo-imagen {
+        display: block;
+        margin: 30px 0 50px 0;
+        width: 400px;
+        height: auto; /* Mantiene la proporción de la imagen */
+    }
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px; /* Espacio entre el encabezado y el formulario */
+    }
+    h2 {
+        margin: 0; /* Eliminar márgenes para mejor alineación */
+    }
+    .titulo-imagen {
+        height: 50px; /* Ajusta el tamaño según sea necesario */
+        width: auto; /* Mantener la proporción del logo */
     }
 </style>
 
