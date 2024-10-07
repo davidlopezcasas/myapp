@@ -1,102 +1,141 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2>Crear Albarán</h2>
+    <div class="header-container">
+        <h2>CREAR ALBARÁN</h2>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" class="titulo-imagen">
+    </div>
     <form action="{{ url_for('create_albaran') }}" method="post">
-        <label for="albaran_id">Número de Albarán:</label>
+        <label for="albaran_id">
+            <i class="fas fa-file-invoice" style="color: #1abc9c;"></i> Número de Albarán:
+        </label>
         <input type="number" id="albaran_id" name="albaran_id" required><br>
 
-        <label for="cliente_id">Cliente:</label>
+        <label for="cliente_id">
+            <i class="fas fa-user" style="color: #3498db;"></i> Cliente:
+        </label>
         <select id="cliente_id" name="cliente_id" required>
             {% for cliente in clientes %}
             <option value="{{ cliente.cliente_id }}">{{ cliente.nombre }}</option>
             {% endfor %}
         </select><br>
 
-        <label for="fecha">Fecha:</label>
+        <label for="fecha">
+            <i class="fas fa-calendar-alt" style="color: #f39c12;"></i> Fecha:
+        </label>
         <input type="date" id="fecha" name="fecha" required><br>
 
-        <label for="portestotales">Portes Totales:</label>
+        <label for="portestotales">
+            <i class="fas fa-euro-sign" style="color: #e74c3c;"></i> Portes Totales:
+        </label>
         <input type="number" id="portestotales" name="portestotales" step="0.01"><br>
 
-        <h3>Lineas de Producto</h3>
+        <h3><i class="fas fa-box" style="color: #9b59b6;"></i> Líneas de Producto</h3>
         <div id="lineas-producto-container">
             <div class="linea-producto">
-                <!-- Product Line Fields -->
-                <label for="nombreproducto">Nombre Producto:</label>
+                <label for="nombreproducto">
+                    <i class="fas fa-tag" style="color: #8e44ad;"></i> Nombre Producto:
+                </label>
                 <select id="nombreproducto" name="nombreproducto[]">
                     {% for producto in productos %}
                     <option value="{{ producto.nombreProducto }}">{{ producto.nombreProducto }}</option>
                     {% endfor %}
                 </select><br>
 
-                <label for="intervalopesos">Intervalo Pesos:</label>
+                <label for="intervalopesos">
+                    <i class="fas fa-balance-scale" style="color: #f1c40f;"></i> Intervalo Pesos:
+                </label>
                 <input type="text" id="intervalopesos" name="intervalopesos[]"><br>
 
-                <label for="descripcion">Descripción:</label>
+                <label for="descripcion">
+                    <i class="fas fa-info-circle" style="color: #e67e22;"></i> Descripción:
+                </label>
                 <select id="descripcion" name="descripcion[]">
                     {% for desc in descripciones %}
                     <option value="{{ desc.descripcion }}">{{ desc.descripcion }}</option>
                     {% endfor %}
                 </select><br>
 
-                <label for="lote">Lote:</label>
+                <label for="lote">
+                    <i class="fas fa-cube" style="color: #2ecc71;"></i> Lote:
+                </label>
                 <input type="text" id="lote" name="lote[]" class="uppercase"><br>
 
-                <label for="numerocajas">Número de Cajas:</label>
+                <label for="numerocajas">
+                    <i class="fas fa-boxes" style="color: #e74c3c;"></i> Número de Cajas:
+                </label>
                 <input type="number" id="numerocajas" name="numerocajas[]"><br>
 
-                <label for="tipocaja">Tipo de Caja:</label>
+                <label for="tipocaja">
+                    <i class="fas fa-cube" style="color: #3498db;"></i> Tipo de Caja:
+                </label>
                 <select id="tipocaja" name="tipocaja[]">
                     {% for caja in tipos_caja %}
                     <option value="{{ caja.tipocaja }}">{{ caja.tipocaja }}</option>
                     {% endfor %}
                 </select><br>
 
-                <label for="kilos">Kilos:</label>
+                <label for="kilos">
+                    <i class="fas fa-balance-scale" style="color: #9b59b6;"></i> Kilos:
+                </label>
                 <input type="number" id="kilos" name="kilos[]" step="0.01"><br>
 
-                <label for="precio">Precio:</label>
+                <label for="precio">
+                    <i class="fas fa-tag" style="color: #f39c12;"></i> Precio:
+                </label>
                 <input type="number" id="precio" name="precio[]" step="0.01"><br>
 
-                <label for="tipozona">Zona:</label>
+                <label for="tipozona">
+                    <i class="fas fa-map-marker-alt" style="color: #e67e22;"></i> Zona:
+                </label>
                 <select id="tipozona" name="tipozona[]">
                     {% for zona in tipos_zona %}
                     <option value="{{ zona.zona }}">{{ zona.zona }}</option>
                     {% endfor %}
                 </select><br>
 
-                <label for="barco">Barco:</label>
+                <label for="barco">
+                    <i class="fas fa-ship" style="color: #1abc9c;"></i> Barco:
+                </label>
                 <input type="text" id="barco" name="barco[]" class="uppercase"><br>
 
-                <label for="obs">Observaciones:</label>
+                <label for="obs">
+                    <i class="fas fa-comments" style="color: #3498db;"></i> Observaciones:
+                </label>
                 <input type="text" id="obs" name="obs[]" class="uppercase"><br>
 
-                <label for="tipoarte">Arte:</label>
+                <label for="tipoarte">
+                    <i class="fas fa-fish" style="color: #e74c3c;"></i> Arte:
+                </label>
                 <select id="tipoarte" name="tipoarte[]">
                     {% for arte in tipos_arte %}
                     <option value="{{ arte.arte }}">{{ arte.arte }}</option>
                     {% endfor %}
                 </select><br>
 
-                <label for="preciocompra">Precio Compra:</label>
+                <label for="preciocompra">
+                    <i class="fas fa-euro-sign" style="color: #2ecc71;"></i> Precio Compra:
+                </label>
                 <input type="number" id="preciocompra" name="preciocompra[]" step="0.01"><br>
 
-                <label for="porteskg">Portes/Kg:</label>
+                <label for="porteskg">
+                    <i class="fas fa-euro-sign" style="color: #e74c3c;"></i> Portes/Kg:
+                </label>
                 <input type="number" id="porteskg" name="porteskg[]" step="0.01"><br>
 
-                <label for="beneficiokg">Beneficio/Kg:</label>
+                <label for="beneficiokg">
+                    <i class="fas fa-euro-sign" style="color: #9b59b6;"></i> Beneficio/Kg:
+                </label>
                 <input type="number" id="beneficiokg" name="beneficiokg[]" step="0.01"><br>
 
                 <!-- QR Code Scanner Section -->
-                <button type="button" class="add-etiqueta">Añadir Etiqueta</button>
                 <div class="etiquetas-container" data-linea-id="0"></div>
-                <button type="button" class="remove-linea">Eliminar Línea</button>
+                <button type="button" class="remove-linea"><i class="fas fa-trash"></i> Eliminar Línea</button>
                 <hr>
             </div>
         </div>
-        <button type="button" id="add-linea">Añadir Línea de Producto</button><br>
-        <button type="submit">Guardar Albarán</button>
+        <button type="button" id="add-linea"><i class="fas fa-plus" style="color: #f9f9f9;"></i> Añadir Línea de Producto</button><br>
+        <button type="submit"><i class="fas fa-save" style="color: #f9f9f9;"></i> Guardar Albarán</button>
     </form>
 
     <!-- QR Code Scanner Modal -->
@@ -104,10 +143,30 @@
         <div id="qr-reader" style="width:500px"></div>
         <button id="close-qr-scanner">Cerrar</button>
     </div>
-<style>
-    body {
-        margin: 50px 100px 100px 100px;
-    }
-</style>
+
+    <style>
+        body {
+            margin: 50px 100px 100px 100px;
+        }
+        .titulo-imagen {
+            display: block;
+            margin: 30px 0 50px 0;
+            width: 400px;
+            height: auto; /* Mantiene la proporción de la imagen */
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px; /* Espacio entre el encabezado y el formulario */
+        }
+        h2 {
+            margin: 0; /* Eliminar márgenes para mejor alineación */
+        }
+        .titulo-imagen {
+            height: 50px; /* Ajusta el tamaño según sea necesario */
+            width: auto; /* Mantener la proporción del logo */
+        }
+    </style>
 
 {% endblock %}

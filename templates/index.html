@@ -23,15 +23,15 @@
         <tr>
             <td>{{ albaran.albaran_id }}</td>
             <td>{{ albaran.nombre }}</td>
-            <td>{{ albaran.fecha }}</td>
+            <td>{{ albaran.fecha.strftime('%d-%m-%Y') }}</td>
             <td>
-                <a href="{{ url_for('edit_albaran', albaran_id=albaran.albaran_id) }}">Editar</a>
-                <a href="{{ url_for('view_albaran', albaran_id=albaran.albaran_id) }}">Ver</a>
-                <a href="{{ url_for('pdf_albaran_view', albaran_id=albaran.albaran_id) }}" target="_blank">Transporte</a>
-                <a class="open-costes-modal" data-albaran-id="{{ albaran.albaran_id }}" data-albaran-nombre="{{ albaran.nombre }}" data-albaran-fecha="{{ albaran.fecha }}">Costes</a>
-                <a href="{{ url_for('delete_albaran', albaran_id=albaran.albaran_id) }}" onclick="return confirmDelete()">Eliminar</a>
+                <a href="{{ url_for('edit_albaran', albaran_id=albaran.albaran_id) }}"><i class="fas fa-edit"></i></a>
+                <a href="{{ url_for('view_albaran', albaran_id=albaran.albaran_id) }}"><i class="fas fa-eye"></i></a>
+                <a href="{{ url_for('pdf_albaran_view', albaran_id=albaran.albaran_id) }}" target="_blank"><i class="fas fa-truck"></i></a>
+                <a class="open-costes-modal" data-albaran-id="{{ albaran.albaran_id }}" data-albaran-nombre="{{ albaran.nombre }}" data-albaran-fecha="{{ albaran.fecha }}"><i class="fas fa-euro-sign"></i></a>
+                <a href="{{ url_for('delete_albaran', albaran_id=albaran.albaran_id) }}" onclick="return confirmDelete()"><i class="fas fa-trash"></i></a>
                 <div class="dropdown">
-                    <span class="dropdown-toggle">Más</span>
+                    <span class="dropdown-toggle"><i class="fas fa-plus"></i></span>
                     <div class="dropdown-menu">
                         <a class="dropdown-item">
                             <label for="pdf_file_{{ albaran.albaran_id }}" style="display: none;" class="normal-weight">Subir archivo PDF</label>
