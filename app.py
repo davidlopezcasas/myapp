@@ -4,7 +4,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import pymysql
 from weasyprint import HTML, CSS
 import io
-from datetime import timedelta
+from datetime import timedelta, date
 
 app = Flask(__name__)
 app.secret_key = 'tu_secreto_aqui'
@@ -567,7 +567,75 @@ def toggle_pagado(gasto_id):
     return redirect(url_for('ver_gastos'))
 
 
+@app.route('/beneficios', methods=['GET', 'POST'])
+@login_required
+def beneficios():
+    # Obtener la fecha actual por defecto
+    fecha_actual = date.today().strftime('%Y-%m-%d')
 
+    if request.method == 'POST':
+        # Si es una solicitud AJAX para actualizar resultados
+        cliente_id = request.form.get('cliente_id')
+        fecha_inicio = request.form.get('fecha_inicio', fecha_actual)
+        fecha_fin = request.form.get('fecha_fin', fecha_actual)
+
+        # Conectar a la base de datos
+        connection = get_db_connection()
+        with connection.cursor() as cursor:
+            if cliente_id:
+                query = """
+                    SELECT c.nombre, SUM(precio*kilos - preciocompra*kilos - kilos*porteskg) AS beneficio, 
+                    SUM(precio*kilos) as venta, SUM(preciocompra*kilos) as compra, SUM(kilos*porteskg) as transporte,
+                    SUM(precio*kilos*1.1) as ventaiva, SUM(preciocompra*kilos*1.1) as compraiva, SUM(kilos*porteskg*1.21) as transporteiva,
+                    SUM(precio*kilos*1.1 - preciocompra*kilos*1.1 - kilos*porteskg*1.21) AS beneficioiva
+                    FROM lineas_producto lp
+                    JOIN albaran a ON lp.albaran_id = a.albaran_id
+                    JOIN cliente c ON a.cliente_id = c.cliente_id
+                    WHERE a.fecha BETWEEN %s AND %s
+                    AND a.cliente_id = %s
+                    GROUP BY a.cliente_id
+                """
+                cursor.execute(query, (fecha_inicio, fecha_fin, cliente_id))
+            else:
+                query = """
+                    SELECT c.nombre, SUM(precio*kilos - preciocompra*kilos - kilos*porteskg) AS beneficio, 
+                    SUM(precio*kilos) as venta, SUM(preciocompra*kilos) as compra, SUM(kilos*porteskg) as transporte,
+                    SUM(precio*kilos*1.1) as ventaiva, SUM(preciocompra*kilos*1.1) as compraiva, SUM(kilos*porteskg*1.21) as transporteiva,
+                    SUM(precio*kilos*1.1 - preciocompra*kilos*1.1 - kilos*porteskg*1.21) AS beneficioiva
+                    FROM lineas_producto lp
+                    JOIN albaran a ON lp.albaran_id = a.albaran_id
+                    JOIN cliente c ON a.cliente_id = c.cliente_id
+                    WHERE a.fecha BETWEEN %s AND %s
+                    GROUP BY c.cliente_id
+                """
+                cursor.execute(query, (fecha_inicio, fecha_fin))
+
+            resultados = cursor.fetchall()
+
+            total_beneficio = sum(row['beneficio'] for row in resultados) if not cliente_id else None
+            total_venta = sum(row['venta'] for row in resultados) if not cliente_id else None
+            total_transporte = sum(row['transporte'] for row in resultados) if not cliente_id else None
+            total_compra = sum(row['compra'] for row in resultados) if not cliente_id else None
+            total_ventaiva = sum(row['ventaiva'] for row in resultados) if not cliente_id else None
+            total_compraiva = sum(row['compraiva'] for row in resultados) if not cliente_id else None
+            total_transporteiva = sum(row['transporteiva'] for row in resultados) if not cliente_id else None
+            total_beneficioiva = sum(row['beneficioiva'] for row in resultados) if not cliente_id else None
+
+        connection.close()
+
+        # Devolver los resultados como JSON para procesarlos con JavaScript
+        return jsonify({"resultados": resultados, "total_beneficio": total_beneficio, "total_venta": total_venta,
+                        "total_transporte": total_transporte, "total_compra": total_compra, "total_ventaiva": total_ventaiva,
+                        "total_compraiva": total_compraiva, "total_transporteiva": total_transporteiva, "total_beneficioiva": total_beneficioiva})
+
+    # Cargar clientes para el formulario (para la carga inicial de la página)
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM cliente")
+        clientes = cursor.fetchall()
+    connection.close()
+
+    return render_template('beneficios.html', clientes=clientes, fecha_actual=fecha_actual)
 
 
 if __name__ == '__main__':

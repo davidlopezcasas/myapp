@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="header-container">
+        <a href="{{ url_for('index') }}" class="btn btn-primary">Volver</a>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" class="titulo-imagen">
+    </div>
+
+    <form id="filtro-form">
+        <div class="row">
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="cliente_id">Cliente:</label>
+                    <select name="cliente_id" id="cliente_id" class="form-control">
+                        <option value="">TODOS</option>
+                        {% for cliente in clientes %}
+                            <option value="{{ cliente.cliente_id }}">{{ cliente.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fecha_inicio">Fecha Inicio:</label>
+                    <input type="date" name="fecha_inicio" id="fecha_inicio" class="form-control" value="{{ fecha_actual }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="fecha_fin">Fecha Fin:</label>
+                    <input type="date" name="fecha_fin" id="fecha_fin" class="form-control" value="{{ fecha_actual }}" required>
+                </div>
+            </div>
+            <div class="col-4">
+            </div>
+            <div class="col-4">
+                <label>Mostrar columnas:</label><br>
+                <input type="checkbox" id="toggle-venta" onclick="toggleColumn('venta')"> Venta (Facturación neta)<br>
+                <input type="checkbox" id="toggle-compra" onclick="toggleColumn('compra')"> Compra (Proveedores neto)<br>
+                <input type="checkbox" id="toggle-transporte" onclick="toggleColumn('transporte')"> Transporte (Gastos neto)<br>
+                <input type="checkbox" id="toggle-ventaiva" onclick="toggleColumn('ventaiva')"> Venta+IVA (Facturación bruto)<br>
+                <input type="checkbox" id="toggle-compraiva" onclick="toggleColumn('compraiva')"> Compra+IVA (Proveedores bruto)<br>
+                <input type="checkbox" id="toggle-transporteiva" onclick="toggleColumn('transporteiva')"> Transporte+IVA (Gastos bruto)<br>
+                <input type="checkbox" id="toggle-beneficioiva" onclick="toggleColumn('beneficioiva')"> Beneficio+IVA<br>
+            </div>
+        </div>
+    </form>
+
+    <!-- Sección para mostrar los resultados -->
+    <h2>Resultados</h2>
+    <table class="table" id="resultados-table">
+        <thead>
+            <tr>
+                <th>Cliente</th>
+                <th>Beneficio</th>
+                <th class="venta-column" style="display: none;">Venta</th>
+                <th class="compra-column" style="display: none;">Compra</th>
+                <th class="transporte-column" style="display: none;">Transporte</th>
+                <th class="ventaiva-column" style="display: none;">Venta (IVA)</th>
+                <th class="compraiva-column" style="display: none;">Compra (IVA)</th>
+                <th class="transporteiva-column" style="display: none;">Transporte (IVA)</th>
+                <th class="beneficioiva-column" style="display: none;">Beneficio (IVA)</th>
+            </tr>
+        </thead>
+        <tbody id="resultados-body">
+            <!-- Los resultados se actualizarán aquí mediante JavaScript -->
+        </tbody>
+        <tfoot>
+            <tr id="total-row" style="font-weight: bold;">
+                <!-- Fila de Total se mostrará aquí si aplica -->
+            </tr>
+        </tfoot>
+    </table>
+
+    <h2>Visualización de Datos</h2>
+    <div id="grafico-barras"></div>
+    <div id="grafico-sectores"></div>
+
+</div>
+
+<script>
+function actualizarResultados() {
+    const formData = new FormData(document.getElementById('filtro-form'));
+    fetch("{{ url_for('beneficios') }}", {
+        method: "POST",
+        body: formData,
+        headers: { "X-Requested-With": "XMLHttpRequest" }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const resultadosBody = document.getElementById('resultados-body');
+        const totalRow = document.getElementById('total-row');
+        resultadosBody.innerHTML = '';
+        totalRow.innerHTML = '';
+
+        // Población de la tabla de resultados
+        if (data.resultados.length > 0) {
+            data.resultados.forEach(resultado => {
+                const row = document.createElement('tr');
+                const clienteCell = document.createElement('td');
+                clienteCell.textContent = resultado.nombre || 'Total';
+                row.appendChild(clienteCell);
+
+                const beneficioCell = document.createElement('td');
+                beneficioCell.textContent = resultado.beneficio.toFixed(2);
+                row.appendChild(beneficioCell);
+
+                // Crear celdas de columnas opcionales
+                ['venta', 'compra', 'transporte', 'ventaiva', 'compraiva', 'transporteiva', 'beneficioiva'].forEach(campo => {
+                    const cell = document.createElement('td');
+                    cell.textContent = resultado[campo] ? resultado[campo].toFixed(2) : '0.00';
+                    cell.classList.add(`${campo}-column`);
+                    cell.style.display = document.getElementById(`toggle-${campo}`).checked ? '' : 'none';
+                    row.appendChild(cell);
+                });
+
+                resultadosBody.appendChild(row);
+            });
+
+            // Agregar fila TOTAL si "TODOS" está seleccionado
+            if (data.total_beneficio !== null) {
+                const totalClienteCell = document.createElement('td');
+                totalClienteCell.textContent = 'TOTAL';
+                totalRow.appendChild(totalClienteCell);
+
+                const totalBeneficioCell = document.createElement('td');
+                totalBeneficioCell.textContent = data.total_beneficio.toFixed(2);
+                totalRow.appendChild(totalBeneficioCell);
+
+                ['venta', 'compra', 'transporte', 'ventaiva', 'compraiva', 'transporteiva', 'beneficioiva'].forEach(campo => {
+                    const totalCell = document.createElement('td');
+                    totalCell.textContent = data[`total_${campo}`] ? data[`total_${campo}`].toFixed(2) : '0.00';
+                    totalCell.classList.add(`${campo}-column`);
+                    totalCell.style.display = document.getElementById(`toggle-${campo}`).checked ? '' : 'none';
+                    totalRow.appendChild(totalCell);
+                });
+            }
+        } else {
+            const row = document.createElement('tr');
+            const noResultCell = document.createElement('td');
+            noResultCell.textContent = 'No se encontraron resultados para las fechas seleccionadas.';
+            noResultCell.colSpan = 9;
+            row.appendChild(noResultCell);
+            resultadosBody.appendChild(row);
+        }
+
+        // Llama a la función para actualizar los gráficos
+        actualizarGraficos(data);
+    })
+    .catch(error => console.error('Error al obtener resultados:', error));
+}
+
+// Función para mostrar/ocultar columnas al activar/desactivar checkboxes
+function toggleColumn(columnClass) {
+    const columnCells = document.querySelectorAll(`.${columnClass}-column`);
+    columnCells.forEach(cell => {
+        cell.style.display = cell.style.display === 'none' ? '' : 'none';
+    });
+}
+
+function actualizarGraficos(data) {
+    // Datos para el gráfico de barras
+    const labels = data.resultados.map(res => res.nombre);
+    const valoresBeneficio = data.resultados.map(res => res.beneficio);
+    const valoresVenta = data.resultados.map(res => res.venta);
+    const valoresCompra = data.resultados.map(res => res.compra);
+
+    // Gráfico de barras
+    Plotly.newPlot('grafico-barras', [
+        { x: labels, y: valoresBeneficio, name: 'Beneficio', type: 'bar', marker: { color: 'rgb(0, 123, 255)' } },
+        { x: labels, y: valoresVenta, name: 'Venta', type: 'bar', marker: { color: 'rgb(255, 99, 132)' } },
+        { x: labels, y: valoresCompra, name: 'Compra', type: 'bar', marker: { color: 'rgb(40, 167, 69)' } }
+    ], { title: 'Beneficios y Ventas por Cliente', yaxis: { tickformat: ".2f" } });
+
+    // Gráfico de sectores (pie chart)
+    Plotly.newPlot('grafico-sectores', [{
+        values: valoresBeneficio,
+        labels: labels,
+        type: 'pie',
+        texttemplate: '%{value:.2f}', // Muestra los valores con dos decimales
+        hovertemplate: '%{label}: %{value:.2f} <br>%{percent:.2%}' // Muestra el valor y el porcentaje con dos decimales al pasar el cursor
+    }], {
+        title: 'Distribución de Beneficios'
+    });
+}
+
+// Asignar el evento a los campos del formulario
+document.getElementById('cliente_id').addEventListener('change', actualizarResultados);
+document.getElementById('fecha_inicio').addEventListener('change', actualizarResultados);
+document.getElementById('fecha_fin').addEventListener('change', actualizarResultados);
+
+// Cargar resultados por defecto al cargar la página
+document.addEventListener('DOMContentLoaded', actualizarResultados);
+</script>
+{% endblock %}
